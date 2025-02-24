@@ -7,10 +7,10 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Rust for .NET Developers',
   tagline: 'The #1 workshop for .NET developers learning Rust',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
 
   // Set the production url of your site here
-  url: 'https://rust4dotnet.jameseastham.co.uk',
+  url: 'https://rustfor.net',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -51,12 +51,12 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    //image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'My Site',
+      title: 'Rust for .NET',
       logo: {
-        alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        alt: 'Rust for .NET',
+        src: 'img/logo.png',
       },
       items: [
         {
@@ -88,16 +88,8 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'Bsky',
+              href: 'https://bsky.app/profile/jameseastham.co.uk',
             },
           ],
         },
@@ -105,13 +97,17 @@ const config: Config = {
           title: 'More',
           items: [
             {
+              label: 'Subscribe for Updates',
+              href: 'https://magic.beehiiv.com/v1/c0b70af5-bea3-4bc7-a1f9-ca9eaf4a56e9',
+            },
+            {
               label: 'GitHub',
               href: 'https://github.com/jeastham1993/rust-for-dotnet-devs-workshop',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} James Eastham. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
