@@ -1,0 +1,16 @@
+[package]
+name = "module_9_rust_app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.96"
+async-trait = "0.1.83"
+axum = { version = "0.8.1", features = ["macros"] }
+serde = { version = "1.0.218", features = ["derive"] }
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+sqlx = {version = "0.8.3", features = ["postgres", "runtime-tokio"]}
+argon2 = "0.5.3"
+
+[dev-dependencies]

@@ -6,7 +6,7 @@ var arrayExample = new string[1] {"Hello"};
 var listExample = new List<string>();
 var boolExample = true;
 
-var user = new User("James");
+var user = new User("john@doe.com", "John Doe", "John!23");
 user.SayHello();
 
 user.UpdateName("John");
@@ -18,12 +18,35 @@ var premiumUser = user.UpgradeToPremium();
 user.SayHello();
 premiumUser.SayHello();
 
-class User {
-    public string Name { get; set; }
+switch (user.UserType) {
+    case UserType.Standard:
+        Console.WriteLine("Standard user");
+        break;
+}
 
-    public User(string name) {
+enum UserType
+{
+    Standard,
+    Premium,
+    Freemium
+}
+
+internal class User {
+    private string _password;
+
+    public User(string emailAddress, string name, string password) {
+        EmailAddress = emailAddress;
         Name = name;
+        this._password = password;
+        UserType = UserType.Standard;
     }
+    
+    public string EmailAddress { get; }
+    public string Name { get; private set; }
+    
+    public int? Age { get; private set; }
+    
+    public UserType UserType { get; internal set; }
 
     public void UpdateName(string newName) {
         Name = newName;
@@ -33,14 +56,30 @@ class User {
         Console.WriteLine("Hello! I'm " + Name + ", I'm a standard user");
     }
 
+    public bool ValidatePassword(string password) {
+        return this._password == password;
+    }
+
     public PremiumUser UpgradeToPremium() {
-        return new PremiumUser(this.Name);
+        return new PremiumUser(this.EmailAddress, this.Name, this._password);
     }
 }
 
-class PremiumUser : User {
-    public PremiumUser(string name): base(name) {
+internal class FreemiumUser : User
+{
+    public FreemiumUser(string emailAddress, string name, string password): base(emailAddress, name, password)
+    {
+        this.UserType = UserType.Freemium;
+    }
 
+    public override void SayHello() {
+        Console.WriteLine("Hello! I'm " + Name + ", I'm a free user");
+    }
+}
+
+internal class PremiumUser : User {
+    public PremiumUser(string emailAddress, string name, string password): base(emailAddress, name, password) {
+        this.UserType = UserType.Premium;
     }
 
     public override void SayHello() {
