@@ -10,8 +10,6 @@ pub enum ApplicationError {
     UserAlreadyExists,
     #[error("user does not exist")]
     UserDoesNotExist,
-    #[error("user does not exist")]
-    DotnetNorth,
     #[error("the provider password is incorrect")]
     IncorrectPassword,
     #[error("error interacting with database {0}")]
@@ -191,5 +189,36 @@ impl User {
             Ok(_) => Ok(()),
             Err(_) => Err(ApplicationError::IncorrectPassword)
         } 
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn when_new_user_is_created_should_be_standard() {
+        let user = User::new("test@test.com", "James", "James!23").unwrap();
+        
+        if let User::Standard { user_details } = user {
+            assert_eq!(user_details.email_address, "test@test.com");
+            assert_eq!(user_details.name, "James");
+        } else {
+            panic!("Expected User::Standard variant");
+        }
+    }
+
+    #[test]
+    fn when_user_is_updated_to_premium_should_be_premium_user() {
+        let user = User::new("test@test.com", "James", "James!23").unwrap();
+        
+        let premium_user = user.update_to_premium();
+
+        if let User::Premium { user_details, is_premium } = premium_user {
+            assert_eq!(user_details.email_address, "test@test.com");
+            assert_eq!(user_details.name, "James");
+        } else {
+            panic!("Expected User::Standard variant");
+        }
     }
 }

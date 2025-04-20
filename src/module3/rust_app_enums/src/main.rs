@@ -45,25 +45,23 @@ struct UserDetails {
     name: String,
 }
 
-
 enum User {
     Standard{user_details: UserDetails},
-    Premium{user_details: UserDetails, is_premium: bool}
+    Premium{user_details: UserDetails, is_premium: bool},
 }
 
 impl User {
-    // no 'self' at all defines a static method. Called using User::new()
+    // When you create a new user, you default it to a Standard User
     fn new(email_address: &str, name: &str) -> User {
         User::Standard { user_details: UserDetails {
             email_address: email_address.to_string(), name: name.to_string(), age: None
         } }
     }
     
-    // &mut self is used because you want to mutate the data in this instance of the struct
+    // When you want to update a value, you extract the user_details property
+    // from the enum and then update the value.
     fn update_name(&mut self, new_name: &str) {
         let mut user_details = match self {
-            // The '*' is used to dereference the value of the variable, so you can change it.
-            // De-referncing refers to accessing the underlying value the reference points to
             User::Standard { user_details } => user_details,
             User::Premium { user_details, is_premium: _ } => user_details,
         };
@@ -82,7 +80,8 @@ impl User {
         user_details.age = Some(new_age);
     }
 
-    // &self is used because you want to reference the data of this instance, not take ownership of it. Read but not write
+    // When referencing a value you extract the value again
+    // and then implement it.
     fn say_hello(&self) {
         let name = match &self {
             User::Standard { user_details } => {

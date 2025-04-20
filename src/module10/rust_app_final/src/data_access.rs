@@ -24,7 +24,6 @@ impl PostgresUsers {
 #[async_trait::async_trait]
 impl DataAccess for PostgresUsers {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError> {
-        // Create the query and pass in parameters
         let email = sqlx::query!(
             r#"
             SELECT email_address, name, password
@@ -33,17 +32,12 @@ impl DataAccess for PostgresUsers {
             "#,
             email_address,
         )
-            // Query the database, returning an Option if no row is found
             .fetch_optional(&self.db)
             .await;
         
-        // Check to see if the Option is Some or None
         match email {
-            // If it is, parse the record
             Ok(record) => match record {
                 Some(data) => {
-                    // Create a new User instance from the data, the data struct
-                    // is strongly typed based on database properties.
                     let user = User::from(&data.email_address, &data.name, &data.password);
                     
                     Ok(user)
@@ -54,7 +48,6 @@ impl DataAccess for PostgresUsers {
         }
     }
 
-    // Same again for inserts
     async fn store(&self, user: User) -> Result<(), ApplicationError> {
         let _rec = sqlx::query!(
             r#"

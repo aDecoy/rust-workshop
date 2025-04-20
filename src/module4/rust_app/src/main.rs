@@ -1,26 +1,42 @@
-use serde::{Deserialize, Serialize};
-use serde_json::json;
-
-fn main() {
+#[tokio::main]
+async fn main() {
     // Mut keyword declares this variable as something that can be mutated in the future
-    let user = User::new("james@eastham.com", "James");
+    let mut user = User::new("james@eastham.com", "James");
 
-    println!("{}", serde_json::to_string_pretty(&user).unwrap());
-    
-    let premium_user = user.update_to_premium();
-
-    println!("{}", serde_json::to_string_pretty(&premium_user).unwrap());
-    
-    let user_json = r#"
-        "email_address": "james@eastham.com",
-        "name": "James",
-    }"#;
-    
-    let user_details = serde_json::from_str(user_json).unwrap();
-    
-    let user = User::Standard { user_details };
-    
     user.say_hello();
+
+    // ERROR: cannot borrow as mutable
+    user.update_name("John");
+
+    user.say_hello();
+
+    let mut premium_user = user.update_to_premium();
+
+    // Calling say_hello here will cause an error because the original instance of user has been dropped
+    // user.say_hello();
+    premium_user.say_hello();
+    
+    premium_user.whats_my_age();
+    
+    premium_user.update_age(32);
+
+    premium_user.whats_my_age();
+    
+    let mut max_loops = 10;
+
+    loop {
+        if max_loops == 0 {
+            break;
+        }
+        
+        println!("Looping in a loop...{}", max_loops);
+        
+        max_loops = max_loops - 1;
+    }
+
+    for i in 1..10 {
+        println!("Looping in a for...{}", i);
+    }
 }
 
 struct UserDetails {
@@ -31,29 +47,21 @@ struct UserDetails {
 
 enum User {
     Standard{user_details: UserDetails},
-    Premium{user_details: UserDetails, is_premium: bool}
+    Premium{user_details: UserDetails, is_premium: bool},
 }
 
 impl User {
-    // no 'self' at all defines a static method. Called using User::new()
+    // When you create a new user, you default it to a Standard User
     fn new(email_address: &str, name: &str) -> User {
         User::Standard { user_details: UserDetails {
             email_address: email_address.to_string(), name: name.to_string(), age: None
         } }
     }
     
-    fn details(&self) -> &UserDetails {
-        match self {
-            User::Standard { user_details } => user_details,
-            User::Premium { user_details, is_premium: _ } => user_details,
-        }
-    }
-    
-    // &mut self is used because you want to mutate the data in this instance of the struct
+    // When you want to update a value, you extract the user_details property
+    // from the enum and then update the value.
     fn update_name(&mut self, new_name: &str) {
         let mut user_details = match self {
-            // The '*' is used to dereference the value of the variable, so you can change it.
-            // De-referncing refers to accessing the underlying value the reference points to
             User::Standard { user_details } => user_details,
             User::Premium { user_details, is_premium: _ } => user_details,
         };
@@ -72,7 +80,8 @@ impl User {
         user_details.age = Some(new_age);
     }
 
-    // &self is used because you want to reference the data of this instance, not take ownership of it. Read but not write
+    // When referencing a value you extract the value again
+    // and then implement it.
     fn say_hello(&self) {
         let name = match &self {
             User::Standard { user_details } => {
@@ -124,6 +133,13 @@ impl User {
         match self {
             User::Standard { user_details } => User::Premium { user_details, is_premium: true },
             User::Premium { .. } => self
+        }
+    }
+    
+    fn details(&self) -> &UserDetails {
+        match self {
+            User::Standard { user_details } => user_details,
+            User::Premium { user_details, is_premium: _ } => user_details,
         }
     }
 }

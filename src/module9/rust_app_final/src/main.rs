@@ -21,12 +21,15 @@ async fn main() -> Result<(), ApplicationError> {
         data_access: postgres_data_access
     });
     
+    // build our application with a route
     let app = Router::new()
+        // `POST /users` goes to `register_user`
         .route("/users", post(register_user))
         .route("/login", post(login))
         .route("/users/{email_address}", get(get_user_details))
         .with_state(shared_state);
-    
+
+    // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
     
     axum::serve(listener, app.into_make_service())
@@ -38,8 +41,11 @@ async fn main() -> Result<(), ApplicationError> {
 
 async fn register_user<TDataAccess: DataAccess + Send + Sync>(
     State(state): State<Arc<AppState<TDataAccess>>>,
+    // this argument tells axum to parse the request body
+    // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<RegisterUserRequest>,
 ) -> (StatusCode, Json<Option<UserDetails>>) {
+    // insert your application logic here
     let user = User::new(&payload.email_address, &payload.name, &payload.password);
     match user {
         Ok(user) => {
@@ -48,11 +54,9 @@ async fn register_user<TDataAccess: DataAccess + Send + Sync>(
             match data_access {
                 Ok(_) => (StatusCode::CREATED, Json(Some(user.details().clone()))),
                 Err(e) => match e {
-                    // match on the application error to return the correct status code
                     ApplicationError::UserDoesNotExist => {
                         (StatusCode::NOT_FOUND, Json(None))
                     },
-                    // If it's any other error code then return a 500
                     _ => {
                         (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
                     }
