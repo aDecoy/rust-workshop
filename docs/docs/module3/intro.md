@@ -4,16 +4,16 @@ sidebar_position: 1
 
 # Data Types
 
-Let's get into starting to model our business domain. No low level systems programming here, let's build something real.
+Let's get into starting to model our business domain. No low level systems programming here, let's build something real together.
 
-If you recall, functionality wise we need to build a service that allows users to:
+If you recall, functionality wise you need to build a service that allows users to:
 
 - Register a new account
 - Login
 - Retrieve their account information
 - Update their account details
 
-Which means we need to model a `User`. `Users` are also going to need properties, you know things like `first_name`, `last_name`. So let's have a look at the different data types available in Rust.
+Which means you need to model a `User`. `Users` are also going to need properties, you know things like `first_name`, `last_name`. So let's look at the different data types available in Rust that you'll use.
 
 > [!IMPORTANT]
 > By convention, variables in Rust use `_` instead of `camelCase` or `snakeCase`

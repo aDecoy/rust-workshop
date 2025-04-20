@@ -21,7 +21,7 @@ Let's see if you can go and fix it... Go on, try on your own.
 
 If you delete the line assigning the `integer_example` then congrats 🎉 You're a Rust developer now.
 
-So how would you go about declaring a variable that could be changed? That's easy, introducing the `mut` keyword.
+So how would you go about declaring a variable that you could change? That's easy, introducing the `mut` keyword.
 
 ```rs
 // Shadowing
@@ -31,6 +31,8 @@ println!("{}", str_example);
 ```
 
 ## Shadowing
+
+When you're working with Rust, you'll often encounter a concept called shadowing. Here's how it works:
 
 ```rs
 // Shadowing
@@ -50,3 +52,5 @@ println!("{}", str_example);
 println!("{}", str_example);
 // PRINTS: And can be edited
 ```
+
+With shadowing, you can declare a new variable with the same name as a previous variable. This is different from mutability - you're creating a completely new variable that just happens to have the same name. This is particularly useful when you need to change the type of a variable, while keeping the same name.

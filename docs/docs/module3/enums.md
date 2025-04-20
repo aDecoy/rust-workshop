@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Enums
 
-Enums can have properties
+When you work with Rust, you'll find that enums are much more powerful than in .NET. In Rust, enums can have properties:
 
 ```rs
 struct UserDetails {
@@ -19,7 +19,7 @@ enum User {
 }
 ```
 
-Enums can also have functions:
+You can also add functions to your enums:
 
 ```rs
 enum User {
@@ -53,4 +53,60 @@ impl User {
 }
 ```
 
-Explain the `match` keyword and the `if let` keywords.
+## Understanding `match` and `if let`
+
+### The `match` Keyword
+
+The `match` keyword in Rust is similar to a switch statement in C#, but much more powerful. When you use `match`, you:
+
+1. Take a value (like an enum variant)
+2. Compare it against patterns
+3. Execute code for the pattern that matches
+
+In the example above, you see:
+
+```rs
+let users_age = match &self {
+    User::Standard { user_details } => user_details.age,
+    User::Premium { user_details, is_premium: _ } => user_details.age
+};
+```
+
+This code is:
+- Matching against the enum variants of User
+- Extracting the `user_details` field from each variant
+- Using the `_` pattern to ignore the `is_premium` field
+- Returning the `age` field from the matched variant
+
+Unlike C# switches, Rust's `match` requires you to handle all possible cases, making your code safer and more complete.
+
+### The `if let` Keyword
+
+The `if let` syntax is a more concise way to handle a single pattern match. You'll find it particularly useful when you only care about one specific pattern and want to ignore all others.
+
+In the example:
+
+```rs
+if let Some(age) = users_age {
+    println!("I'm {} years old.", age);
+} else {  
+    println!("I don't know my age.");
+} 
+```
+
+This code:
+1. Checks if `users_age` matches the pattern `Some(age)`
+2. If it matches, binds the value inside `Some` to the variable `age`
+3. Executes the first block of code if there's a match
+4. Executes the `else` block if there's no match
+
+This is much more concise than writing:
+
+```rs
+match users_age {
+    Some(age) => println!("I'm {} years old.", age),
+    None => println!("I don't know my age."),
+}
+```
+
+You'll use `if let` frequently when working with `Option` types to check if a value exists and extract it in one step.

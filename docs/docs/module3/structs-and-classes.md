@@ -4,6 +4,8 @@ sidebar_position: 3
 
 # Structs and Classes
 
+In Rust, you'll use structs as the primary way to organize related data, similar to how you'd use classes in .NET:
+
 ```rs
 // A struct is comparable to a class in .NET
 struct User {
@@ -38,7 +40,7 @@ And now we get on to one of the most powerful data types in the Rust ecosystem, 
 
 ## Enums
 
-Enums can have properties
+When you're working with Rust, you'll find that enums are much more powerful than in .NET. In Rust, enums can have properties:
 
 ```rs
 struct UserDetails {
@@ -53,7 +55,7 @@ enum User {
 }
 ```
 
-Enums can also have functions:
+You can also add functions to your enums:
 
 ```rs
 enum User {
