@@ -15,8 +15,11 @@ If you recall, functionality wise you need to build a service that allows users 
 
 Which means you need to model a `User`. `Users` are also going to need properties, you know things like `first_name`, `last_name`. So let's look at the different data types available in Rust that you'll use.
 
-> [!IMPORTANT]
-> By convention, variables in Rust use `_` instead of `camelCase` or `snakeCase`
+:::info
+
+By convention, variables in Rust use `_` instead of `camelCase` or `snakeCase`
+
+:::
 
 ```rust showLineNumbers
 // A string slice is a view into a string, or a reference to a string.
