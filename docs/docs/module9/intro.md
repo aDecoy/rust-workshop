@@ -30,7 +30,7 @@ Unit tests in Rust typically live in the same file as the code they test, in a s
 
 Here's an example:
 
-```rust
+```rust showLineNumbers
 // Implementation code
 pub fn add(a: i32, b: i32) -> i32 {
     a + b
@@ -75,7 +75,7 @@ my_project/
 
 An integration test might look like:
 
-```rust
+```rust showLineNumbers
 // tests/api_tests.rs
 use my_project::api;
 
@@ -97,7 +97,7 @@ Integration tests:
 
 To test async functions, you need to use a runtime like tokio:
 
-```rust
+```rust showLineNumbers
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -116,7 +116,7 @@ The `#[tokio::test]` attribute sets up the tokio runtime for your async test.
 
 For tests that need similar setup and teardown, you can use Rust's Drop trait:
 
-```rust
+```rust showLineNumbers
 struct TestFixture {
     // Test data and state...
     db_connection: PgPool,
@@ -155,7 +155,7 @@ async fn test_with_fixture() {
 
 Mocking in Rust typically leverages traits. By creating trait implementations specifically for testing:
 
-```rust
+```rust showLineNumbers
 // Define a trait for the behavior we want to mock
 #[async_trait::async_trait]
 pub trait DataAccess {
@@ -211,7 +211,7 @@ Property-based testing is a powerful technique where you define properties your 
 
 Using the `proptest` crate:
 
-```rust
+```rust showLineNumbers
 use proptest::prelude::*;
 
 proptest! {

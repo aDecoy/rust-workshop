@@ -23,7 +23,7 @@ The borrow checker is often cited as Rust's most distinctive feature—and initi
 
 In .NET, you can freely create multiple references to the same object:
 
-```csharp
+```csharp showLineNumbers
 var myList = new List<int> { 1, 2, 3 };
 var ref1 = myList;
 var ref2 = myList;
@@ -45,7 +45,7 @@ Ownership is Rust's most fundamental concept and the foundation of its memory sa
 
 In .NET, multiple parts of your code can "own" an object simultaneously. Consider this C# example:
 
-```csharp
+```csharp showLineNumbers
 var data = new List<int> { 1, 2, 3 };
 ProcessList(data);
 // We can still use data here
@@ -70,7 +70,7 @@ Lifetimes are Rust's way of ensuring that references are always valid—they're 
 
 In .NET, you can create references that become invalid, leading to runtime errors:
 
-```csharp
+```csharp showLineNumbers
 string? GetDangerousReference() {
     var localString = "I'll be gone soon";
     return localString; // This actually works in C# because strings are special
@@ -91,7 +91,7 @@ While not listed in the initial bullets, error handling differs significantly be
 
 In .NET, you're accustomed to exception handling:
 
-```csharp
+```csharp showLineNumbers
 try {
     var file = File.OpenRead("missing.txt");
     // Process file
@@ -115,7 +115,7 @@ Finally, concurrency works very differently between the two languages.
 
 In .NET, you use various synchronization primitives to avoid race conditions:
 
-```csharp
+```csharp showLineNumbers
 private static readonly object _lock = new object();
 
 public void UpdateSharedState() {

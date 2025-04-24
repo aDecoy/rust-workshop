@@ -44,7 +44,7 @@ Let's look at specific examples from the codebase that demonstrate these differe
 
 ### .NET Example
 
-```csharp
+```csharp showLineNumbers
 var user = new User(){
     Name = "James"
 };
@@ -78,7 +78,7 @@ This C# code creates a `User` object and then attempts to update its name from t
 
 ### Rust Example
 
-```rust
+```rust showLineNumbers
 #[tokio::main]
 async fn main() {
     // Create a user that we want to modify from multiple async tasks
@@ -116,7 +116,7 @@ The compiler error would be something like: `error[E0382]: use of moved value: '
 
 To safely share mutable state between threads in Rust, you need to be explicit about it. Here's how you could fix the above code:
 
-```rust
+```rust showLineNumbers
 use std::sync::{Arc, Mutex};
 
 #[tokio::main]
@@ -167,7 +167,7 @@ This approach is more verbose than the .NET version, but it makes thread synchro
 
 Another memory safety issue Rust prevents is use-after-move errors, as shown in this example:
 
-```rust
+```rust showLineNumbers
 fn example1() {
     let user = User {
         name: "James".to_string(),
@@ -198,7 +198,7 @@ In this example:
 
 Rust's borrowing rules also prevent data races within a single thread:
 
-```rust
+```rust showLineNumbers
 fn example2() {
     let mut user = User {
         name: "James".to_string(),

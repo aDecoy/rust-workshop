@@ -20,7 +20,7 @@ cargo init
 
 For some of you older .NET developers, you might remember the days when a .NET application had a `Program.cs` file that looked a little bit something like this:
 
-```c#
+```csharp showLineNumbers
 static void Main(object[] args){
     Console.WriteLine("Hello, World!");    
 }
@@ -28,15 +28,16 @@ static void Main(object[] args){
 
 And then Microsoft went and made things all simpler, which means a .NET application still has a `Program.cs` file, but now it looks a little bit something like this:
 
-```c#
+```csharp
 // See https://aka.ms/new-console-template for more information
 Console.WriteLine("Hello, World!");
 ```
 
 Now if you squint and look at this piece of code, go on... Really squint... I'm sure you can see the similarities with Rust:
 
-```rs
+```rust showLineNumbers showLineNumbers
 fn main() {
+    // highlight-next-line
     println!("Hello, world!");
 }
 ```
@@ -70,13 +71,13 @@ And that's not all. Rust also has:
 
 1. Data types & Variables
 
-    ```rs
+    ```rust showLineNumbers
     let first_name: String = "James";
     ```
 
 2. Structures (similar to classes)
 
-    ```rs
+    ```rust showLineNumbers
     struct User {
         name: String,
         email: String,
@@ -85,7 +86,7 @@ And that's not all. Rust also has:
 
 3. Functions / methods
 
-    ```rs
+    ```rust showLineNumbers
     impl User {
         // no 'self' at all defines a static method. Called using User::new()
         fn new(email_address: &str, name: &str) -> User {
@@ -151,7 +152,7 @@ Now it's time for you to take your first steps with Rust! Here's a simple challe
    ```
    
    Then use it in your code:
-   ```rust
+   ```rust showLineNumbers
    use chrono::Local;
    
    fn main() {

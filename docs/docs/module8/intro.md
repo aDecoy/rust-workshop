@@ -70,7 +70,7 @@ To connect to PostgreSQL, you'll need to:
 
 Let's examine how this is implemented:
 
-```rust
+```rust showLineNumbers
 use std::env;
 use sqlx::PgPool;
 use crate::core::ApplicationError;
@@ -107,7 +107,7 @@ This code introduces two important Rust error handling patterns:
 
 For structured error handling, you'll use the `thiserror` crate to define application-specific errors:
 
-```rust
+```rust showLineNumbers
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -134,7 +134,7 @@ This provides:
 
 SQLx provides several ways to execute queries. The most powerful is the `query!` macro, which validates your SQL at compile time:
 
-```rust
+```rust showLineNumbers
 async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError> {
     // Create the query and pass in parameters
     let email = sqlx::query!(
@@ -175,7 +175,7 @@ Key points about this code:
 
 To maintain the abstraction from the previous module, you'll implement the `DataAccess` trait for your `PostgresUsers` struct:
 
-```rust
+```rust showLineNumbers
 #[async_trait::async_trait]
 impl DataAccess for PostgresUsers {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError> {
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 With all these pieces in place, you can initialize your database in the main function:
 
-```rust
+```rust showLineNumbers
 #[tokio::main]
 async fn main() -> Result<(), ApplicationError> {
     // Initialize database connection

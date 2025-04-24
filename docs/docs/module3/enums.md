@@ -6,7 +6,7 @@ sidebar_position: 4
 
 When you work with Rust, you'll find that enums are much more powerful than in .NET. In Rust, enums can have properties:
 
-```rs
+```rust showLineNumbers
 struct UserDetails {
     email_address: String,
     age: Option<i32>,
@@ -21,7 +21,7 @@ enum User {
 
 You can also add functions to your enums:
 
-```rs
+```rust showLineNumbers
 enum User {
     Standard{user_details: UserDetails},
     Premium{user_details: UserDetails, is_premium: bool},
@@ -65,7 +65,7 @@ The `match` keyword in Rust is similar to a switch statement in C#, but much mor
 
 In the example above, you see:
 
-```rs
+```rust showLineNumbers
 let users_age = match &self {
     User::Standard { user_details } => user_details.age,
     User::Premium { user_details, is_premium: _ } => user_details.age
@@ -86,7 +86,7 @@ The `if let` syntax is a more concise way to handle a single pattern match. You'
 
 In the example:
 
-```rs
+```rust showLineNumbers
 if let Some(age) = users_age {
     println!("I'm {} years old.", age);
 } else {  
@@ -102,7 +102,7 @@ This code:
 
 This is much more concise than writing:
 
-```rs
+```rust showLineNumbers
 match users_age {
     Some(age) => println!("I'm {} years old.", age),
     None => println!("I don't know my age."),

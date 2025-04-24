@@ -52,7 +52,7 @@ Serde's derive macros automatically implement the `Serialize` and `Deserialize` 
 
 To make your types serializable, you add the `Serialize` and `Deserialize` derive macros:
 
-```rust
+```rust showLineNumbers
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize)]
@@ -75,7 +75,7 @@ These derive macros automatically implement the necessary traits, making your ty
 
 Now that your types are set up, you can convert them to JSON strings:
 
-```rust
+```rust showLineNumbers
 let user = User::new("james@eastham.com", "James");
 
 // Convert to a pretty-printed JSON string
@@ -89,7 +89,7 @@ The `to_string_pretty` function converts your Rust object to a formatted JSON st
 
 You can also convert JSON data back into Rust types:
 
-```rust
+```rust showLineNumbers
 let user_json = r#"
     "email_address": "james@eastham.com",
     "name": "James",
@@ -106,7 +106,7 @@ Serde provides numerous attributes to customize how your types are represented i
 
 ### Field Renaming
 
-```rust
+```rust showLineNumbers
 #[derive(Serialize, Deserialize)]
 struct UserDetails {
     #[serde(rename = "email")]
@@ -120,7 +120,7 @@ This will serialize `email_address` as `"email"` in the JSON output.
 
 ### Case Conversion
 
-```rust
+```rust showLineNumbers
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct UserDetails {
@@ -134,7 +134,7 @@ This will convert all field names to camelCase in JSON (e.g., `emailAddress` ins
 
 ### Skipping Fields
 
-```rust
+```rust showLineNumbers
 #[derive(Serialize, Deserialize)]
 struct UserDetails {
     email_address: String,

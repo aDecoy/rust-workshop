@@ -23,7 +23,7 @@ In Rust, traits define shared behavior that types can implement. They're similar
 
 A trait is a collection of methods that a type must implement to satisfy the trait. For example:
 
-```rust
+```rust showLineNumbers
 pub trait DataAccess {
     fn with_email_address(&self, email_address: &str) -> Option<User>;
     fn store(&self, user: User);
@@ -36,7 +36,7 @@ This trait defines two methods that any implementing type must provide. Like an 
 
 To implement a trait, you use the `impl Trait for Type` syntax:
 
-```rust
+```rust showLineNumbers
 impl DataAccess for InMemoryDataAccess {
     fn with_email_address(&self, email_address: &str) -> Option<User> {
         self.users.lock().unwrap().iter()
@@ -63,7 +63,7 @@ This is similar to implementing an interface in C#, but note that the implementa
 
 When working with async functions in traits, you'll encounter a limitation: Rust doesn't directly support async functions in traits yet. This is where the `async_trait` crate comes in:
 
-```rust
+```rust showLineNumbers
 use async_trait::async_trait;
 
 #[async_trait]
@@ -83,7 +83,7 @@ Generics in Rust serve a similar purpose to generics in C#: they allow you to wr
 
 In your application, you can define a generic `AppState` type:
 
-```rust
+```rust showLineNumbers
 pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
     pub data_access: TDataAccess
 }
@@ -105,7 +105,7 @@ This is similar to a `where` clause in C#, but Rust's trait bounds can be more p
 
 You can also define generic functions with trait bounds:
 
-```rust
+```rust showLineNumbers
 async fn register_user<TDataAccess: DataAccess + Send + Sync>(
     State(state): State<Arc<AppState<TDataAccess>>>,
     Json(payload): Json<RegisterUserRequest>,
@@ -128,7 +128,7 @@ Lifetimes are annotations that help the Rust compiler ensure references remain v
 
 Lifetime parameters are annotated with an apostrophe:
 
-```rust
+```rust showLineNumbers
 fn example<'a>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() > y.len() { x } else { y }
 }
@@ -140,7 +140,7 @@ This function says that the returned reference will live at least as long as the
 
 Without lifetimes, it would be possible to return references to data that has been freed, causing undefined behavior. Consider this invalid code:
 
-```rust
+```rust showLineNumbers
 fn invalid_code() -> &str {
     let s = String::from("hello");
     &s  // INVALID: returns a reference to s, which is dropped at the end of the function

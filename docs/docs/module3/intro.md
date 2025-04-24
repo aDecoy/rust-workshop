@@ -18,7 +18,7 @@ Which means you need to model a `User`. `Users` are also going to need propertie
 > [!IMPORTANT]
 > By convention, variables in Rust use `_` instead of `camelCase` or `snakeCase`
 
-```rs
+```rust showLineNumbers
 // A string slice is a view into a string, or a reference to a string.
 // It's fixed size that's known at compile time,
 // It's does not require heap allocation

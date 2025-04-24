@@ -29,7 +29,7 @@ Tokio is essential for building network services because it allows your applicat
 
 The `#[tokio::main]` attribute macro transforms your `main` function into one that initializes the Tokio runtime:
 
-```rust
+```rust showLineNumbers
 #[tokio::main]
 async fn main() {
     // Your asynchronous code here
@@ -61,7 +61,7 @@ Let's examine how to build a basic API in Rust compared to .NET:
 
 ### Rust (with Axum):
 
-```rust
+```rust showLineNumbers
 use axum::{
     routing::post,
     Router,
@@ -90,7 +90,7 @@ async fn register_user() -> &'static str {
 
 ### .NET (with ASP.NET Core):
 
-```csharp
+```csharp showLineNumbers
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
@@ -109,7 +109,7 @@ While both examples are concise, the approaches differ:
 
 Axum handlers are asynchronous functions that take extractors as parameters and return types that can be converted into responses:
 
-```rust
+```rust showLineNumbers
 async fn register_user(
     Json(payload): Json<RegisterUserRequest>,
 ) -> (StatusCode, Json<UserDetails>) {
@@ -129,7 +129,7 @@ The function signature reveals several important concepts:
 
 .NET has a built-in dependency injection system, but Rust takes a different approach. In Axum, you'll typically manage shared state using `Extension`:
 
-```rust
+```rust showLineNumbers
 // Define your application state
 #[derive(Default)]
 struct AppState {
@@ -165,7 +165,7 @@ This pattern allows multiple request handlers to safely share and modify applica
 
 Axum integrates seamlessly with serde for JSON handling:
 
-```rust
+```rust showLineNumbers
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct RegisterUserRequest {
@@ -186,7 +186,7 @@ struct UserDetails {
 
 The `Json` extractor and response type handle the conversion between Rust types and JSON:
 
-```rust
+```rust showLineNumbers
 // Extract JSON from request body
 Json(payload): Json<RegisterUserRequest>
 

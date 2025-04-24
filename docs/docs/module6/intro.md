@@ -36,7 +36,7 @@ In Rust, you can declare modules in two ways:
 
 1. **In-file module declarations**:
 
-```rust
+```rust showLineNumbers
 mod core {
     // Module contents
 }
@@ -44,7 +44,7 @@ mod core {
 
 2. **Separate files**:
 
-```rust
+```rust showLineNumbers
 // In main.rs
 mod core; // Tells Rust to look for core.rs or core/mod.rs
 ```
@@ -71,7 +71,7 @@ Let's look at how you can restructure your application using modules and the Por
 
 First, identify the core business logic of your application. In your case, it's the user management logic:
 
-```rust
+```rust showLineNumbers
 // core.rs
 use serde::{Deserialize, Serialize};
 
@@ -117,7 +117,7 @@ Note the use of `pub` for items that need to be accessible from other modules.
 
 Next, create a separate module for data access concerns:
 
-```rust
+```rust showLineNumbers
 // data_access.rs
 use std::sync::{Arc, RwLock};
 use crate::core::User;
@@ -136,7 +136,7 @@ The `pub(crate)` modifier makes `users` accessible only within the current crate
 
 Finally, use both modules in your main application:
 
-```rust
+```rust showLineNumbers
 // main.rs
 mod core;
 mod data_access;

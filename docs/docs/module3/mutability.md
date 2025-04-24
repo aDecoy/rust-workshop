@@ -23,7 +23,7 @@ If you delete the line assigning the `integer_example` then congrats 🎉 You're
 
 So how would you go about declaring a variable that you could change? That's easy, introducing the `mut` keyword.
 
-```rs
+```rust showLineNumbers
 // Shadowing
 let mut str_example = "This string is now mutable";
 str_example = "And can be edited";
@@ -34,7 +34,7 @@ println!("{}", str_example);
 
 When you're working with Rust, you'll often encounter a concept called shadowing. Here's how it works:
 
-```rs
+```rust showLineNumbers
 // Shadowing
 let mut str_example = "This string is now mutable";
 str_example = "And can be edited";

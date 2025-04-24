@@ -54,7 +54,7 @@ Let's examine the specific examples from the codebase that demonstrate these dif
 
 ### .NET Example Analysis
 
-```csharp
+```csharp showLineNumbers
 // Store some long-lived data to force GC pressure
 var longLivedObjects = new List<byte[]>();
 
@@ -93,7 +93,7 @@ while (!Console.KeyAvailable)
 
 The memory allocation function:
 
-```csharp
+```csharp showLineNumbers
 static void AllocateMemory(int taskId)
 {
     var random = new Random(taskId);
@@ -147,7 +147,7 @@ static void AllocateMemory(int taskId)
 
 ### Rust Example Analysis
 
-```rust
+```rust showLineNumbers
 // Initialize memory tracking statistics
 let stats = MemoryStats {
     allocated: Arc::new(AtomicUsize::new(0)),
@@ -192,7 +192,7 @@ loop {
 
 The allocation function:
 
-```rust
+```rust showLineNumbers
 fn allocate_memory(
     id: usize,
     allocated: Arc<AtomicUsize>, 
@@ -254,7 +254,7 @@ fn allocate_memory(
 **Key Observations in the Rust Code:**
 
 1. **Scoped Memory**: The code explicitly uses scopes `{}` to control when memory is freed:
-   ```rust
+   ```rust showLineNumbers
    {
        // Memory allocated here...
        let _large_vec = vec![0u8; size];
@@ -330,7 +330,7 @@ Both programs allocate similar amounts of memory in terms of raw allocations, bu
 To make .NET code more efficient, developers often:
 
 1. **Object Pooling**: Reuse objects instead of creating new ones
-   ```csharp
+   ```csharp showLineNumbers
    // Using an object pool to reduce allocations
    var buffer = ArrayPool<byte>.Shared.Rent(1024);
    try {
@@ -341,13 +341,13 @@ To make .NET code more efficient, developers often:
    ```
 
 2. **Value Types**: Use structs instead of classes for small, short-lived data
-   ```csharp
+   ```csharp showLineNumbers
    // Struct doesn't cause heap allocation for small data
    struct Point { public int X; public int Y; }
    ```
 
 3. **SpanT**: Use spans for working with memory without allocations
-   ```csharp
+   ```csharp showLineNumbers
    Span<byte> buffer = stackalloc byte[1024]; // Stack allocation
    ```
 
@@ -359,13 +359,13 @@ To make .NET code more efficient, developers often:
 Rust makes efficient patterns the default:
 
 1. **Stack Allocation**: Values are allocated on the stack when possible
-   ```rust
+   ```rust showLineNumbers
    // Automatically stack allocated
    let buffer = [0u8; 1024];
    ```
 
 2. **RAII**: Resources are automatically cleaned up
-   ```rust
+   ```rust showLineNumbers
    // File is automatically closed when it goes out of scope
    {
        let file = File::open("data.txt")?;
@@ -374,13 +374,13 @@ Rust makes efficient patterns the default:
    ```
 
 3. **Zero-Cost Abstractions**: High-level constructs with no runtime cost
-   ```rust
+   ```rust showLineNumbers
    // Iterator chains compile to efficient loops
    let sum: u32 = (0..100).filter(|n| n % 2 == 0).sum();
    ```
 
 4. **References**: Borrow data without copying
-   ```rust
+   ```rust showLineNumbers
    fn process(data: &[u32]) { /* use data without owning it */ }
    ```
 

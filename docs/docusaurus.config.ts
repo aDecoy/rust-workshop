@@ -5,33 +5,33 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Rust for .NET Developers',
-  tagline: 'The #1 workshop for .NET developers learning Rust',
-  favicon: 'img/favicon.png',
+  title: "Rust for .NET Developers",
+  tagline: "The #1 workshop for .NET developers learning Rust",
+  favicon: "img/favicon.png",
 
   // Set the production url of your site here
-  url: 'https://rustfor.net',
+  url: "https://rustfor.net",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: "/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'jeastham1993', // Usually your GitHub org/user name.
-  projectName: 'rust-for-dotnet-devs-workshop', // Usually your repo name.
+  organizationName: "jeastham1993", // Usually your GitHub org/user name.
+  projectName: "rust-for-dotnet-devs-workshop", // Usually your repo name.
 
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "warn",
 
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
   plugins: [
     [
-      '@docusaurus/plugin-google-gtag',
+      "@docusaurus/plugin-google-gtag",
       {
-        trackingID: 'G-YPEKK2EK7N',
+        trackingID: "G-YPEKK2EK7N",
         anonymizeIP: true,
       },
     ],
@@ -39,17 +39,17 @@ const config: Config = {
 
   presets: [
     [
-      'classic',
+      "classic",
       {
         docs: {
-          sidebarPath: './sidebars.ts',
+          sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: "./src/css/custom.css",
         },
       } satisfies Preset.Options,
     ],
@@ -59,56 +59,56 @@ const config: Config = {
     // Replace with your project's social card
     //image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'Rust for .NET',
+      title: "Rust for .NET",
       logo: {
-        alt: 'Rust for .NET',
-        src: 'img/logo.png',
+        alt: "Rust for .NET",
+        src: "img/logo.png",
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Workshop',
+          type: "docSidebar",
+          sidebarId: "tutorialSidebar",
+          position: "left",
+          label: "Workshop",
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
-          label: 'GitHub',
-          position: 'right',
+          href: "https://github.com/facebook/docusaurus",
+          label: "GitHub",
+          position: "right",
         },
       ],
     },
     footer: {
-      style: 'dark',
+      style: "dark",
       links: [
         {
-          title: 'Docs',
+          title: "Docs",
           items: [
             {
-              label: 'Workshop',
-              to: '/docs/intro',
+              label: "Workshop",
+              to: "/docs/intro",
             },
           ],
         },
         {
-          title: 'Community',
+          title: "Community",
           items: [
             {
-              label: 'Bsky',
-              href: 'https://bsky.app/profile/jameseastham.co.uk',
+              label: "Bsky",
+              href: "https://bsky.app/profile/jameseastham.co.uk",
             },
           ],
         },
         {
-          title: 'More',
+          title: "More",
           items: [
             {
-              label: 'Subscribe for Updates',
-              href: 'https://magic.beehiiv.com/v1/c0b70af5-bea3-4bc7-a1f9-ca9eaf4a56e9',
+              label: "Subscribe for Updates",
+              href: "https://magic.beehiiv.com/v1/c0b70af5-bea3-4bc7-a1f9-ca9eaf4a56e9",
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/jeastham1993/rust-for-dotnet-devs-workshop',
+              label: "GitHub",
+              href: "https://github.com/jeastham1993/rust-for-dotnet-devs-workshop",
             },
           ],
         },
@@ -117,7 +117,8 @@ const config: Config = {
     },
     prism: {
       theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      darkTheme: prismThemes.github,
+      additionalLanguages: ["rust", "csharp", "bash"],
     },
   } satisfies Preset.ThemeConfig,
 };

@@ -6,7 +6,7 @@ sidebar_position: 3
 
 In Rust, you'll use structs as the primary way to organize related data, similar to how you'd use classes in .NET:
 
-```rs
+```rust showLineNumbers
 // A struct is comparable to a class in .NET
 struct User {
     email_address: String,
@@ -42,7 +42,7 @@ And now we get on to one of the most powerful data types in the Rust ecosystem, 
 
 When you're working with Rust, you'll find that enums are much more powerful than in .NET. In Rust, enums can have properties:
 
-```rs
+```rust showLineNumbers
 struct UserDetails {
     email_address: String,
     age: Option<i32>,
@@ -57,7 +57,7 @@ enum User {
 
 You can also add functions to your enums:
 
-```rs
+```rust showLineNumbers
 enum User {
     Standard{user_details: UserDetails},
     Premium{user_details: UserDetails, is_premium: bool},
