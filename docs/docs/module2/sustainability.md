@@ -50,9 +50,11 @@ Benefits of this approach:
 
 ## Analyzing the Sustainability Examples
 
-Let's examine the specific examples from the codebase that demonstrate these differences.
+Let's examine the specific [examples](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/2-sustainability) from the codebase that demonstrate these differences.
 
 ### .NET Example Analysis
+
+[.NET Link](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/2-sustainability/DotnetConsoleApp)
 
 ```csharp showLineNumbers
 // Store some long-lived data to force GC pressure
@@ -146,6 +148,8 @@ static void AllocateMemory(int taskId)
 5. **Memory Retention**: Objects remain in memory until collected by the GC, not when they go out of scope.
 
 ### Rust Example Analysis
+
+[Rust Example Link](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/2-sustainability/rust_app)
 
 ```rust showLineNumbers
 // Initialize memory tracking statistics
@@ -323,69 +327,6 @@ Both programs allocate similar amounts of memory in terms of raw allocations, bu
 - **.NET** retains more memory at any given time due to deferred collection
 - **Rust** shows higher memory throughput (allocate/deallocate cycles) with lower retention
 
-## Code Design Patterns for Efficiency
-
-### Efficient Patterns in .NET
-
-To make .NET code more efficient, developers often:
-
-1. **Object Pooling**: Reuse objects instead of creating new ones
-   ```csharp showLineNumbers
-   // Using an object pool to reduce allocations
-   var buffer = ArrayPool<byte>.Shared.Rent(1024);
-   try {
-       // Use buffer
-   } finally {
-       ArrayPool<byte>.Shared.Return(buffer);
-   }
-   ```
-
-2. **Value Types**: Use structs instead of classes for small, short-lived data
-   ```csharp showLineNumbers
-   // Struct doesn't cause heap allocation for small data
-   struct Point { public int X; public int Y; }
-   ```
-
-3. **SpanT**: Use spans for working with memory without allocations
-   ```csharp showLineNumbers
-   Span<byte> buffer = stackalloc byte[1024]; // Stack allocation
-   ```
-
-4. **MemoryT**: For efficient memory representations
-5. **IDisposable**: For deterministic cleanup of unmanaged resources
-
-### Efficient Patterns in Rust
-
-Rust makes efficient patterns the default:
-
-1. **Stack Allocation**: Values are allocated on the stack when possible
-   ```rust showLineNumbers
-   // Automatically stack allocated
-   let buffer = [0u8; 1024];
-   ```
-
-2. **RAII**: Resources are automatically cleaned up
-   ```rust showLineNumbers
-   // File is automatically closed when it goes out of scope
-   {
-       let file = File::open("data.txt")?;
-       // work with file
-   } // file is closed here
-   ```
-
-3. **Zero-Cost Abstractions**: High-level constructs with no runtime cost
-   ```rust showLineNumbers
-   // Iterator chains compile to efficient loops
-   let sum: u32 = (0..100).filter(|n| n % 2 == 0).sum();
-   ```
-
-4. **References**: Borrow data without copying
-   ```rust showLineNumbers
-   fn process(data: &[u32]) { /* use data without owning it */ }
-   ```
-
-5. **Custom Allocators**: For specific memory management needs
-
 ## Real-World Impact
 
 ### Resource Usage Differences
@@ -419,6 +360,10 @@ These differences compound at scale. Companies like Dropbox, Discord, and Micros
    - Using Rust for security-critical and performance-critical components
    - Reported better resource utilization and fewer bugs
    - Eliminates entire classes of memory safety issues
+
+4. **Datadog**:
+    - Rewrote their AWS Lambda Extension in Rust
+    - Better performance and impact on overall function performance in a resource constrainted environment
 
 ## Conclusion
 

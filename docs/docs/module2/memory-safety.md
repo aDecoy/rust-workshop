@@ -40,9 +40,11 @@ This approach provides:
 
 ## Analyzing the Memory Safety Examples
 
-Let's look at specific examples from the codebase that demonstrate these differences.
+Let's look at specific examples from the codebase that demonstrate these differences. You can find them in [GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/1-memory-safety).
 
 ### .NET Example
+
+[.NET Sample Link](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/blob/main/src/solutions/module2/1-memory-safety/DotnetMemorySafety/Program.cs)
 
 ```csharp showLineNumbers
 var user = new User(){
@@ -74,9 +76,11 @@ This C# code creates a `User` object and then attempts to update its name from t
 2. **Non-Deterministic Behavior**: The final value of `Name` depends on which task finishes last
 3. **Implicit Sharing**: The `user` instance is implicitly shared between tasks
 
-.NET allows this code to compile and run, but it has a race condition. The program output will be either "John" or "Doe" depending on timing, making the behavior unpredictable.
+.NET allows this code to compile and run, but it has a race condition. The program output will be either "John" or "Doe" depending on timing, making the behavior unpredictable. With the simplicity of the code, it'll almost always finish in the same order, but it *MIGHT* not which is the key. 
 
 ### Rust Example
+
+[Rust Link](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/blob/main/src/solutions/module2/1-memory-safety/rust_app/src/main.rs)
 
 ```rust showLineNumbers
 #[tokio::main]
@@ -104,7 +108,14 @@ async fn main() {
 }
 ```
 
-The Rust example attempts something similar but with a crucial difference: it **will not compile**. The Rust compiler prevents the data race at compile time through ownership rules:
+The Rust example attempts something similar but with a crucial difference: it **will not compile**. You can try if you want:
+
+```sh
+cd src/examples/module2/1-memory-safety/rust_app
+cargo run
+```
+
+ The Rust compiler prevents the data race at compile time through ownership rules:
 
 1. The first task takes ownership of `user` through the `move` keyword
 2. After this, the `user` value is no longer available in the main function
@@ -161,7 +172,7 @@ In this corrected version:
 3. Each task must explicitly acquire the lock before modifying the data
 4. The lock is automatically released when the reference goes out of scope
 
-This approach is more verbose than the .NET version, but it makes thread synchronization explicit and prevents data races at compile time rather than risking them at runtime.
+Yes, I realise I've just introduce a bunch of new terms there (what the heck is an `Arc` and a `Mutex`). The key thing to take away there is that the key difference is that you're being **explicit** in Rust that you have multiple threads accessing the same piece of data.
 
 ## Another Example: Preventing Use-After-Move
 
@@ -194,7 +205,52 @@ In this example:
 3. After this call, the original variable can no longer be used
 4. The compiler prevents use-after-move errors at compile time
 
-## Borrowing to Prevent Data Races
+## Borrowing
+
+Borrowing is a core concept in Rust that allows you to temporarily access data without taking ownership of it. Think of it like borrowing a book from a library - you can read it, but you need to return it eventually without destroying it.
+
+Borrowing in Rust means creating a reference to a value, rather than moving ownership. References are like pointers that promise not to take ownership or outlive the original data.
+
+Borrowing Syntax
+Immutable borrowing: `&T` - allows reading but not modifying
+Mutable borrowing: `&mut T` - allows both reading and modifying
+
+### Basic Example
+
+```rust showLineNumbers
+fn main() {
+    let s = String::from("hello");
+    
+    // Immutable borrow - just looking at the value
+    let len = calculate_length(&s);  // Note the & here
+    println!("The length of '{}' is {}.", s, len);
+    
+    // Note: s is still valid here because we only borrowed it
+}
+
+// This function borrows the string (doesn't take ownership)
+fn calculate_length(s: &String) -> usize {  // Note the & here too
+    s.len()
+}  // s goes out of scope, but since it's just a reference, nothing happens to the original value
+```
+
+### Mutable Borrowing Example:
+
+```rust showLineNumbers
+fn main() {
+    let mut s = String::from("hello");
+    
+    // Mutable borrow - allows modification
+    add_world(&mut s);  // Note the &mut here
+    println!("{}", s);  // Prints "hello world"
+}
+
+fn add_world(s: &mut String) {  // Note the &mut here too
+    s.push_str(" world");
+}
+```
+
+The borrowing rules you mentioned (one mutable OR many immutable references, no dangling references) are how Rust prevents data races and use-after-free bugs at compile time.
 
 Rust's borrowing rules also prevent data races within a single thread:
 

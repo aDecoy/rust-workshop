@@ -21,22 +21,6 @@ async fn main() {
     premium_user.update_age(32);
 
     premium_user.whats_my_age();
-    
-    let mut max_loops = 10;
-
-    loop {
-        if max_loops == 0 {
-            break;
-        }
-        
-        println!("Looping in a loop...{}", max_loops);
-        
-        max_loops = max_loops - 1;
-    }
-
-    for i in 1..10 {
-        println!("Looping in a for...{}", i);
-    }
 }
 
 struct UserDetails {

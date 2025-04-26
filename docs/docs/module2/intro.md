@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Rust & .NET Differences
+# Memory Management
 
 Ok, you got me. There are some pretty fundamental differences between Rust and .NET that you'll encounter as you make this transition. Understanding these differences is key to your success with Rust.
 
@@ -33,6 +33,7 @@ ref2.Add(5);
 ```
 
 Rust's borrow checker enforces strict rules about references:
+
 - **Single Mutable Reference OR Multiple Immutable References**: You can have either one mutable reference to data or any number of immutable references, but never both simultaneously.
 - **Compile-Time Verification**: These rules are enforced at compile time, preventing entire classes of bugs.
 - **Error Messages**: When you violate these rules, the compiler gives you detailed messages explaining what went wrong and how to fix it.
@@ -58,15 +59,21 @@ void ProcessList(List<int> list) {
 ```
 
 In Rust, every value has exactly one owner:
-- **Transfer of Ownership**: When you pass a value to a function or assign it to another variable, ownership transfers unless you explicitly borrow it.
+- **Transfer of Ownership**: When you pass a value to a function or assign it to another variable, ownership transfers unless you explicitly borrow it (more on that later).
 - **Move Semantics**: Assigning a value to another variable moves it, making the original variable invalid.
-- **Copy Types**: Simple types like integers implement the Copy trait and are automatically copied instead of moved.
+- **Copy Types**: Simple types like integers implement the `Copy` trait and are automatically copied instead of moved.
+
+:::info
+
+Don't worry, you'll learn more about `traits` in a later module. For the moment, think of them like interfaces
+
+:::
 
 This system may seem unusual at first, but it's what allows Rust to determine exactly when memory can be freed without relying on garbage collection. You'll learn patterns like borrowing and cloning that give you flexibility while maintaining memory safety guarantees.
 
 ## 4. Lifetimes
 
-Lifetimes are Rust's way of ensuring that references are always valid—they're how the compiler tracks how long references should be valid.
+Lifetimes are Rust's way of ensuring that references are always valid. They're how the compiler tracks how long references should be valid.
 
 In .NET, you can create references that become invalid, leading to runtime errors:
 

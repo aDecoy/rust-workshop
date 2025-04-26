@@ -2,17 +2,9 @@
 sidebar_position: 1
 ---
 
-# Module 4: Working with JSON in Rust
+# Working with JSON in Rust
 
 In this module, you'll learn how to work with JSON data in Rust using the powerful `serde` ecosystem. For you as a .NET developer, this is similar to using `System.Text.Json` or `Newtonsoft.Json` to serialize and deserialize objects, but with the added safety and performance that Rust provides.
-
-## Learning Objectives
-
-By the end of this module, you will:
-- Understand what the `serde` ecosystem is and how it works
-- Learn about Rust macros and procedural macros
-- Add JSON serialization and deserialization to your Rust types
-- Customize how your data is represented in JSON
 
 ## What is Serde?
 
@@ -22,7 +14,7 @@ In Rust, you'll typically use two crates together:
 - `serde`: The core serialization/deserialization framework
 - `serde_json`: The JSON-specific implementation of serde
 
-## Step 1: Adding Serde to Your Project
+## Adding Serde to Your Project
 
 First, you need to add the required dependencies to your `Cargo.toml` file:
 
@@ -34,7 +26,7 @@ serde_json = "1.0"
 
 The `derive` feature is particularly important as it allows you to use procedural macros to automatically implement serialization for your types.
 
-## Step 2: Understanding Rust Macros
+## Understanding Rust Macros
 
 Before diving deeper, let's understand what macros are in Rust:
 
@@ -48,7 +40,7 @@ Procedural macros act more like functions (they take code as input, manipulate i
 
 Serde's derive macros automatically implement the `Serialize` and `Deserialize` traits for your types, saving you from writing boilerplate code.
 
-## Step 3: Implementing Serialization for Your Types
+## Implementing Serialization for Your Types
 
 To make your types serializable, you add the `Serialize` and `Deserialize` derive macros:
 
@@ -69,9 +61,14 @@ enum User {
 }
 ```
 
+::: info
+
+If you're familiar with [source generated serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation) in .NET, Rust (de)serialization works in the same way. The code required to manipulate JSON is generated at **compile time**, not relying on things like reflection at runtime.
+:::
+
 These derive macros automatically implement the necessary traits, making your types serializable and deserializable.
 
-## Step 4: Serializing Data to JSON
+## Serializing Data to JSON
 
 Now that your types are set up, you can convert them to JSON strings:
 
@@ -85,7 +82,7 @@ println!("{}", json_string);
 
 The `to_string_pretty` function converts your Rust object to a formatted JSON string with indentation. For more compact output, you can use `to_string` instead.
 
-## Step 5: Deserializing JSON to Rust Types
+## Deserializing JSON to Rust Types
 
 You can also convert JSON data back into Rust types:
 
@@ -100,7 +97,7 @@ let user_details: UserDetails = serde_json::from_str(user_json).unwrap();
 
 The `from_str` function parses a JSON string and converts it to a Rust type. The `unwrap()` call will panic if the JSON is invalid or doesn't match the expected structure - in production code, you'd want to handle errors more gracefully.
 
-## Step 6: Customizing JSON Serialization
+## Customizing JSON Serialization
 
 Serde provides numerous attributes to customize how your types are represented in JSON:
 
@@ -145,20 +142,3 @@ struct UserDetails {
 ```
 
 This will omit the `age` field from JSON output if it's `None`.
-
-## Your Challenge
-
-Now it's time to put what you've learned into practice! In this module's challenge, you'll:
-
-1. Add the serde and serde_json dependencies to your project's Cargo.toml file
-2. Apply the `Serialize` and `Deserialize` derive macros to your User and UserDetails types
-3. Modify your main function to:
-   - Create a user and serialize it to JSON
-   - Print the JSON to the console
-   - Parse a JSON string back into a User struct
-4. Experiment with customizing the JSON output by adding at least one serde attribute (like rename_all)
-5. Ensure you can successfully compile and run your application to confirm the JSON serialization works
-
-The starter code is available in `src/module4/rust_app`, and you can check your solution against `src/module4/rust_app_final`.
-
-Good luck, and remember that working with JSON in Rust gives you the benefits of strong type checking while maintaining high performance!
