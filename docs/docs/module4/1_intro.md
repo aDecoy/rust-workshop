@@ -61,7 +61,7 @@ enum User {
 }
 ```
 
-::: info
+:::info
 
 If you're familiar with [source generated serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation) in .NET, Rust (de)serialization works in the same way. The code required to manipulate JSON is generated at **compile time**, not relying on things like reflection at runtime.
 :::

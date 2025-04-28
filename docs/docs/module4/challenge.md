@@ -15,6 +15,8 @@ Now it's time to put what you've learned into practice! In this module's challen
 4. Experiment with customizing the JSON output by adding at least one serde attribute (like rename_all)
 5. Ensure you can successfully compile and run your application to confirm the JSON serialization works
 
-The starter code is available in `src/examples/module4/rust_app`, and you can check your solution against `src/solutions/module4/rust_app`.
+The starter code for this challenge is [available on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/examples/module4/rust_app).
+
+If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module4/rust_app). But try it on your own first, if you're finding it difficult that's good. It means you're learning.
 
 Good luck, and remember that working with JSON in Rust gives you the benefits of strong type checking while maintaining high performance!

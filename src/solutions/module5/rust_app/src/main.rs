@@ -1,4 +1,6 @@
+use axum::extract::Path;
 use axum::handler::Handler;
+use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Extension, Json, Router, ServiceExt};
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, RwLock};
@@ -17,6 +19,7 @@ async fn main() {
         // When the /users route is hit, and it'a post request. 
         // Call the register_user function 
         .route("/users", post(register_user))
+        .route("/users/{email_address}", get(get_user_details))
         .layer(Extension(SharedState::default()));
 
     // Create a TCP listener on port 3000.
@@ -42,6 +45,22 @@ async fn register_user(
     state.write().unwrap().users.push(user.clone());
     
     (StatusCode::CREATED, Json(user.details().clone()))
+}
+
+async fn get_user_details(
+    Extension(state): Extension<SharedState>,
+    Path(email_address): Path<String>,
+) -> (StatusCode, Json<Option<UserDetails>>) // And the function returns a tuple StatusCode and body 
+{   
+    let users = &state.read().unwrap().users;
+    let user = users
+        .iter()
+        .find(|user| user.details().email_address == email_address);
+
+    match user {
+        Some(user) => (StatusCode::OK, Json(Some(user.details().clone()))),
+        None => (StatusCode::NOT_FOUND, Json(None)),
+    }
 }
 
 #[derive(Deserialize)]

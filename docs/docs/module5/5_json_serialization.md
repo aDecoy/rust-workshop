@@ -2,9 +2,9 @@
 sidebar_position: 5
 ---
 
-## JSON Serialization in Web APIs
+# JSON Serialization in Web APIs
 
-Axum integrates seamlessly with serde for JSON handling:
+Axum integrates seamlessly with `serde` for JSON handling:
 
 ```rust showLineNumbers
 #[derive(Deserialize)]

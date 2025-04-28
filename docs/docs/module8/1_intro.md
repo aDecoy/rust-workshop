@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Module 8: Working with Databases in Rust
+# Working with Databases in Rust
 
 In this module, you'll learn how to work with relational databases in Rust using the SQLx library with PostgreSQL. For you as a .NET developer, this is comparable to using Entity Framework or Dapper, but with Rust's type safety and performance advantages. You'll also learn about error handling patterns in Rust.
 

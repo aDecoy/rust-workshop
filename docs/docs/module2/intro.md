@@ -114,6 +114,14 @@ Rust uses a different approach:
 - **? Operator**: The `?` operator provides a concise way to propagate errors up the call stack.
 - **No Unchecked Exceptions**: All possible error paths are visible in function signatures.
 
+:::important
+
+You'll notice the use of the `.unwrap()` function in these early code samples. `.unwrap()` unwraps the Result type and returns the `OK` value. If the function has an error, then `.unwrap()` panics and crashes your application.
+
+In most cases `.unwrap()` should be considered a code smell, but when you're learning it's ok to use it.
+
+:::
+
 This explicit approach to error handling makes code more reliable and encourages you to think about failure cases upfront. You'll find that Rust's error handling leads to more robust applications with fewer unexpected crashes.
 
 ## 6. Concurrency Model

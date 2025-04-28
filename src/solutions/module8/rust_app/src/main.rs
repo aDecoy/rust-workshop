@@ -2,6 +2,8 @@ mod core;
 mod data_access;
 
 use anyhow::Result;
+use figment::{Figment, providers::{Format, Env}};
+use serde::Deserialize;
 use crate::core::{ApplicationError, DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails};
 use crate::data_access::PostgresUsers;
 use axum::extract::{Path, State};
@@ -13,9 +15,21 @@ pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
     pub data_access: TDataAccess
 }
 
+#[derive(Deserialize)]
+struct Config {
+    connection_string: String,
+}
+
 #[tokio::main]
 async fn main() -> Result<(), ApplicationError> {
-    let postgres_data_access = PostgresUsers::new().await?;
+    let config: Config = Figment::new()
+        .merge(Env::raw())
+        .merge(figment::providers::Json::file("config.json"))
+        .extract()
+        .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
+
+
+    let postgres_data_access = PostgresUsers::new(config.connection_string).await?;
     
     let shared_state = Arc::new(AppState{
         data_access: postgres_data_access
