@@ -54,6 +54,7 @@ But how do you model a variable that may or may not have a value. That's where t
 In Rust, the Option enum is the way to represent a value that might be present or absent. Instead of using null references which can cause runtime errors, Rust forces you to explicitly handle both cases.
 
 ### Structure of Option
+
 The Option type is defined as:
 
 ```rust showLineNumbers
@@ -66,6 +67,7 @@ enum Option<> {
 Where T is a generic type parameter that can be any type.
 
 ### Using Option
+
 Here's a simple example of using Option:
 
 ```rust showLineNumbers
@@ -73,7 +75,32 @@ let mut optional_string: Option<String> = None;
 
 optional_string = Some("Hello".to_string());
 
+match optional_string {
+    Some(string_value) => println!("{}", string_value),
+    None => println!("The optional string variable does not have a value")
+}
+
 ```
 
 This approach forces you to consider the case where a value might be absent, preventing many common bugs related to null references. The compiler won't let you use an `Option` as if it were definitely a T - you must handle both possibilities.
 
+## Pattern Matching
+
+Pattern matching is a powerful feature in Rust that allows you to compare a value against a series of patterns and then execute code based on which pattern matches. It's much more powerful than C#'s switch statement.
+
+### Basic Match Syntax
+
+```rust showLineNumbers
+let number = 5;
+
+match number {
+    1 => println!("One!"),
+    2 => println!("Two!"),
+    3 => println!("Three!"),
+    4 | 5 => println!("Four or five!"), // Multiple values
+    6..=10 => println!("Six through ten"), // Range
+    _ => println!("Something else"), // Default case
+}
+```
+
+One of the reasons this is so powerful is that your code won't compile if you don't handle all edge cases. In the above example, if you were to remove the default case at the bottom the code wouldn't compile, because you're not handling all possible cases that a number could be.

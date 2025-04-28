@@ -18,6 +18,11 @@ struct User {
 impl User {
     // no 'self' at all defines a static method. Called using User::new()
     fn new(email_address: &str, name: &str) -> User {
+        let new_user = User {
+            email_address: email_address.to_string(), name: name.to_string(), age: None
+        };
+
+        new_user
     }
     
     // &mut self is used because you want to mutate the data in this instance of the struct
@@ -35,5 +40,15 @@ impl User {
     }
 }
 ```
+
+:::info
+
+By way of convention, the `constructor` of a struct is always implemented with an `fn new()` function. To create a new user, you would call `let my_new_user = User::new();`
+
+You'll also notice there is no `return` keyword at the end of a function. The `;` indicates the end of a line, much like in C#. But if you leave the `;` off, the compiler assumes you want to return the value. The `new_user` variable demonstrates that in the above code sample.
+
+The `return` keyword does still exist, and you can use that to return a value from a function early.
+
+:::
 
 And now we get on to one of the most powerful data types in the Rust ecosystem, something that might not get the same praise in .NET. The `Enum`

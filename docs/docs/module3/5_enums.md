@@ -19,7 +19,7 @@ enum User {
 }
 ```
 
-You can also add functions to your enums:
+You can also add functions to your enums. Yep, you read that right.... Enums can have logic attached to them:
 
 ```rust showLineNumbers
 enum User {
@@ -110,3 +110,23 @@ match users_age {
 ```
 
 You'll use `if let` frequently when working with `Option` types to check if a value exists and extract it in one step.
+
+:::info
+
+`match` , `if` and `if let` all return values. Which means you can directly set a variable to the result of an `if` or `match` block:
+
+```rust showLineNumbers
+
+let my_new_variable = if condition == true {
+    "The condition was true"
+} else {
+    "The condition was false"
+}
+
+println!(my_new_variable);
+
+```
+
+For this to work, all branches need to return the same value.
+
+:::
