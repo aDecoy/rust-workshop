@@ -4,12 +4,16 @@ sidebar_position: 2
 
 # Mutability
 
-Every variable in Rust is immutable by default. All those variables you see above, yep they can never be changed.
+:::important
+
+Every variable in Rust is immutable by default.
+
+:::
 
 To see this in action, go and run the `module3` code:
 
 ```sh
-cd src/module_3/rust_app
+cd src/examples/module3/rust_app
 cargo run
 ```
 
@@ -23,8 +27,11 @@ If you delete the line assigning the `integer_example` then congrats 🎉 You're
 
 So how would you go about declaring a variable that you could change? That's easy, introducing the `mut` keyword.
 
+:::important
+The `mut` keywords explicitally declares a variable as something you want to mutate later. If you declare a variable as mutable but never actually change it, the compiler will give you a warning and recommend you remove the `mut` keyword. Neat!
+:::
+
 ```rust showLineNumbers
-// Shadowing
 let mut str_example = "This string is now mutable";
 str_example = "And can be edited";
 println!("{}", str_example);

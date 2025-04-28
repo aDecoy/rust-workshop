@@ -1,0 +1,17 @@
+[workspace]
+members = [
+    "module1/rust_app",
+    "module2/1-memory-safety/rust_app",
+    "module2/1-memory-safety/rust_app_memory_demo",
+    "module2/2-sustainability/rust_app",
+    "module3/rust_app",
+    "module4/rust_app",
+    "module5/rust_app",
+    "module6/rust_app",
+    "module7/rust_app",
+    "module8/rust_app",
+    "module9/rust_app",
+    "module10/rust_app",
+]
+
+resolver = "2" # Use the new feature resolver

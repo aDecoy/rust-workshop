@@ -1,8 +1,8 @@
 ---
-sidebar_position: 3
+sidebar_position: 7
 ---
 
-# Sustainability: Memory Efficiency in Rust vs .NET
+# Memory Efficiency
 
 This document explores how Rust's design principles lead to better resource efficiency compared to .NET. We'll analyze concrete examples from the codebase that demonstrate these differences and explain the underlying mechanisms.
 

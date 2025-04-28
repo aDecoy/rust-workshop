@@ -20,7 +20,6 @@ jobs:
           - "src/examples/module2/1-memory-safety/rust_app"
           - "src/examples/module2/1-memory-safety/rust_app_memory_demo"
           - "src/examples/module2/2-sustainability/rust_app"
-          - "src/examples/module3/rust_app"
           - "src/examples/module4/rust_app"
           - "src/examples/module5/rust_app"
           - "src/examples/module6/rust_app"

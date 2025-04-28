@@ -1,8 +1,8 @@
 ---
-sidebar_position: 2
+sidebar_position: 6
 ---
 
-# Memory Safety: Rust vs .NET
+# Memory Safety
 
 This document explores how Rust's ownership system provides memory safety guarantees at compile time, in contrast to the runtime approach used by .NET. We'll analyze specific code examples that demonstrate these differences.
 

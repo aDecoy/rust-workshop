@@ -4,11 +4,11 @@ sidebar_position: 1
 
 # Workshop Intro
 
-:::note
+:::important
 
 This workshop is very much work in progress, check out the sections on the left side to see what is coming!
 
-[Signup to my newsletter](https://magic.beehiiv.com/v1/c0b70af5-bea3-4bc7-a1f9-ca9eaf4a56e9) for updates when new sections are published.
+If you find any issues with any parts of the workshop, please raise an issue on the [GitHub repo](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/issues).
 
 :::
 
