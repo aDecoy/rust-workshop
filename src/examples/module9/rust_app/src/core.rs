@@ -65,6 +65,7 @@ impl User {
     // no 'self' at all defines a static method. Called using User::new()
     pub fn new(email_address: &str, name: &str, password: &str) -> Result<User, ApplicationError> {
         User::email_is_valid(email_address)?;
+        User::password_is_valid(email_address)?;
 
         Ok(User::Standard {
             user_details: UserDetails {
@@ -212,7 +213,7 @@ impl User {
     }
     
     fn email_is_valid(input: &str) -> Result<(), ApplicationError> {
-        let re = Regex::new(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").unwrap();
+        let re = regex::Regex::new(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").unwrap();
         if re.is_match(input) {
             Ok(())
         } else {
