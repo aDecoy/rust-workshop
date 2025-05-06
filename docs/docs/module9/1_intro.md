@@ -118,15 +118,15 @@ For tests that need similar setup and teardown, you can use Rust's Drop trait:
 
 ```rust showLineNumbers
 struct TestFixture {
-    // Test data and state...
+    // Test data and state.
     db_connection: PgPool,
 }
 
 impl TestFixture {
     async fn new() -> Self {
-        // Setup code...
+        // Setup code.
         let db_connection = PgPool::connect("test_db_url").await.unwrap();
-        // Run migrations, seed data...
+        // Run migrations, seed data.
         
         Self { db_connection }
     }
@@ -134,7 +134,7 @@ impl TestFixture {
 
 impl Drop for TestFixture {
     fn drop(&mut self) {
-        // Cleanup code...
+        // Cleanup code.
         // This runs when the fixture goes out of scope
     }
 }
@@ -143,7 +143,7 @@ impl Drop for TestFixture {
 async fn test_with_fixture() {
     let fixture = TestFixture::new().await;
     
-    // Test using fixture...
+    // Test using fixture.
     let result = get_user(&fixture.db_connection, "test@example.com").await;
     assert!(result.is_ok());
     
@@ -156,7 +156,7 @@ async fn test_with_fixture() {
 Mocking in Rust typically leverages traits. By creating trait implementations specifically for testing:
 
 ```rust showLineNumbers
-// Define a trait for the behavior we want to mock
+// Define a trait for the behavior you want to mock
 #[async_trait::async_trait]
 pub trait DataAccess {
     async fn get_user(&self, id: &str) -> Result<User, Error>;
@@ -179,7 +179,7 @@ impl DataAccess for MockDataAccess {
     }
     
     async fn save_user(&self, user: &User) -> Result<(), Error> {
-        // For testing, just return Ok
+        // For testing, return Ok
         Ok(())
     }
 }

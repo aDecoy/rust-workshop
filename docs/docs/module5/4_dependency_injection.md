@@ -30,7 +30,7 @@ async fn register_user(
 ) -> (StatusCode, Json<UserDetails>) {
     // Use the shared state
     state.write().unwrap().users.push(user.clone());
-    // ...
+    // .
 }
 ```
 
@@ -68,7 +68,7 @@ thread::spawn(move || {
 
 ### RwLock (Read-Write Lock)
 
-`RwLock` is very similar to .NET's `ReaderWriterLockSlim`:
+`RwLock` is similar to .NET's `ReaderWriterLockSlim`:
 
 - **Purpose**: Allows multiple concurrent readers OR a single writer, but never both simultaneously
 - **.NET Equivalent**: `System.Threading.ReaderWriterLockSlim`

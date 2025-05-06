@@ -28,7 +28,7 @@ Console.WriteLine($"Initial Gen 0 collections: {GC.CollectionCount(0)}");
 Console.WriteLine($"Initial Gen 1 collections: {GC.CollectionCount(1)}");
 Console.WriteLine($"Initial Gen 2 collections: {GC.CollectionCount(2)}");
 Console.WriteLine();
-Console.WriteLine("Starting memory allocation test on all CPU cores...");
+Console.WriteLine("Starting memory allocation test on all CPU cores.");
 Console.WriteLine("Press any key to exit");
 
 // Store some long-lived data to force GC pressure
@@ -93,7 +93,7 @@ while (!Console.KeyAvailable)
 }
 
 // Cleanup
-Console.WriteLine("\nExiting program and cleaning up...");
+Console.WriteLine("\nExiting program and cleaning up.");
 
 // Method to continuously allocate memory
 static void AllocateMemory(int taskId)

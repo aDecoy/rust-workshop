@@ -55,7 +55,7 @@ To connect to PostgreSQL, you'll need to:
 2. Create a connection pool
 3. Handle connection errors appropriately
 
-Let's examine how this is implemented:
+Examine how this is implemented:
 
 ```rust showLineNumbers
 use std::env;

@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Memory Safety
 
-This document explores how Rust's ownership system provides memory safety guarantees at compile time, in contrast to the runtime approach used by .NET. We'll analyze specific code examples that demonstrate these differences.
+This document explores how Rust's ownership system provides memory safety guarantees at compile time, in contrast to the runtime approach used by .NET. You'll analyze specific code examples that demonstrate these differences.
 
 ## Conceptual Overview
 
@@ -14,7 +14,7 @@ In .NET, memory safety is enforced through several runtime mechanisms:
 
 1. **Garbage Collection**: Automatically reclaims memory when objects are no longer in use
 2. **Reference Tracking**: The runtime keeps track of all references to objects
-3. **Runtime Checks**: Null reference exceptions, array bounds checking, etc.
+3. **Runtime Checks**: Null reference exceptions, array bounds checking, and more.
 4. **Thread Synchronization**: Various locking mechanisms to prevent data races
 
 This approach ensures memory safety but comes with some tradeoffs:
@@ -29,7 +29,7 @@ Rust takes a fundamentally different approach by enforcing memory safety through
 1. **Ownership System**: Each value has exactly one owner
 2. **Borrowing Rules**: References must follow strict rules
    - Either one mutable reference OR multiple immutable references
-   - References must never outlive the data they refer to
+   - References must never outlive the data they read
 3. **Static Analysis**: The compiler analyzes your code to ensure these rules are followed
 4. **Zero Runtime Overhead**: No garbage collection or runtime checks needed
 
@@ -40,7 +40,7 @@ This approach provides:
 
 ## Analyzing the Memory Safety Examples
 
-Let's look at specific examples from the codebase that demonstrate these differences. You can find them in [GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/1-memory-safety).
+You'll first look at specific examples from the codebase that demonstrate these differences. You can find them in [GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/1-memory-safety).
 
 ### .NET Example
 
@@ -85,7 +85,7 @@ This C# code creates a `User` object and then attempts to update its name from t
 ```rust showLineNumbers
 #[tokio::main]
 async fn main() {
-    // Create a user that we want to modify from multiple async tasks
+    // Create a user that you want to modify from multiple async tasks
     let mut user = User{
         name: "James".to_string(),
     };
@@ -167,12 +167,12 @@ async fn main() {
 
 In this corrected version:
 
-1. We use `Arc` (Atomic Reference Counting) to share ownership of the user between threads
-2. We use `Mutex` to ensure only one thread can modify the user at a time
+1. You use `Arc` (Atomic Reference Counting) to share ownership of the user between threads
+2. You use `Mutex` to ensure only one thread can modify the user at a time
 3. Each task must explicitly acquire the lock before modifying the data
 4. The lock is automatically released when the reference goes out of scope
 
-Yes, I realise I've just introduce a bunch of new terms there (what the heck is an `Arc` and a `Mutex`). The key thing to take away there is that the key difference is that you're being **explicit** in Rust that you have multiple threads accessing the same piece of data.
+Yes, I realise I've introduced a bunch of new terms there (what the heck is an `Arc` and a `Mutex`). The key thing to take away there is that the key difference is that you're being **explicit** in Rust that you have multiple threads accessing the same piece of data.
 
 ## Another Example: Preventing Use-After-Move
 
@@ -221,17 +221,17 @@ Mutable borrowing: `&mut T` - allows both reading and modifying
 fn main() {
     let s = String::from("hello");
     
-    // Immutable borrow - just looking at the value
+    // Immutable borrow - looking at the value
     let len = calculate_length(&s);  // Note the & here
     println!("The length of '{}' is {}.", s, len);
     
-    // Note: s is still valid here because we only borrowed it
+    // Note: s is still valid here because you only borrowed it
 }
 
 // This function borrows the string (doesn't take ownership)
 fn calculate_length(s: &String) -> usize {  // Note the & here too
     s.len()
-}  // s goes out of scope, but since it's just a reference, nothing happens to the original value
+}  // s goes out of scope, but since it's a reference, nothing happens to the original value
 ```
 
 ### Mutable Borrowing Example:
@@ -268,7 +268,7 @@ fn example2() {
     
     println!("Name is still: {}", name_ref);
     
-    // After the last use of 'name_ref', we can now borrow as mutable
+    // After the last use of 'name_ref', you can now borrow as mutable
     user.update_name("John");
     println!("Name updated to: {}", user.name);
 }
@@ -288,7 +288,7 @@ These rules are enforced by the compiler, making it impossible to create certain
 |---------|------|------|
 | Memory Safety Enforcement | Runtime | Compile time |
 | Memory Management | Garbage collection | Ownership & RAII |
-| Data Race Prevention | Manual (locks, etc.) | Compiler enforced |
+| Data Race Prevention | Manual (locks) | Compiler enforced |
 | Null Reference Handling | Nullable types + runtime checks | Option + compile-time checks |
 | Resource Cleanup | Finalizers + IDisposable | Deterministic Drop |
 | Concurrency Model | Shared mutable state | Ownership transfer or explicit sharing |
@@ -317,4 +317,4 @@ Rust's approach to memory safety represents a fundamental shift from the runtime
 
 While this approach requires more upfront effort from the developer to satisfy the compiler, it results in safer, more reliable programs, especially in concurrent contexts. The compiler becomes an ally that helps you catch bugs early rather than letting them manifest at runtime.
 
-For .NET developers, understanding Rust's ownership system is the key to learning the language effectively. While it may initially seem restrictive, it's this very constraint that enables Rust to guarantee memory safety without runtime overhead. 
+For .NET developers, understanding Rust's ownership system is the key to learning the language effectively. While it may initially seem restrictive, it's this constraint that enables Rust to guarantee memory safety without runtime overhead. 

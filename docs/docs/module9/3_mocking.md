@@ -93,7 +93,7 @@ mock! {
 }
 ```
 
-Once you've defined your mock, you can then configure how it functions as part of your test run. The name of the generated struct will always be prefixed with the word `Mock`. For example, if your trait was called `DataAccess` then the auto-generated implementation would be called `MockDataAccess` and you would initialize it using the `::new()` function:
+After you've defined your mock, you can then configure how it functions as part of your test run. The name of the generated struct will always be prefixed with the word `Mock`. For example, if your trait was called `DataAccess` then the auto-generated implementation would be called `MockDataAccess` and you would initialize it using the `::new()` function:
 
 ```rust showLineNumbers
 // Initialize the mock implementation

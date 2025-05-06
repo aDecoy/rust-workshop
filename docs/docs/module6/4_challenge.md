@@ -23,6 +23,6 @@ Specifically, you need to:
 
 The starter code for this challenge is [available on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/examples/module6/rust_app).
 
-If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module6/rust_app). But try it on your own first, if you're finding it difficult that's good. It means you're learning.
+If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module6/rust_app). Try it on your own first, if you're finding it difficult that's good. It means you're learning.
 
 Good luck, and remember that a well-structured application will be much easier to maintain and extend as it grows!

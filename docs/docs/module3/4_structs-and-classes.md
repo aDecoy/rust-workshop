@@ -42,7 +42,7 @@ impl User {
     fn say_hello(&self) {
     }
 
-    // Using just 'self' is a rare case where you want to take ownership of the original instance and use something new
+    // Using 'self' is a rare case where you want to take ownership of the original instance and use something new
     // calling this function will prevent the original instance from being used, as this function
     // takes ownership and then drop the original instance
     fn update_to_premium(self) -> PremiumUser {
@@ -52,13 +52,13 @@ impl User {
 
 In Rust, the functions of a struct are defined seperately to the `struct` itself. For that, you will use an `impl` block.
 
-Unlike other languages, `new` is not a keyword in Rust. By way of convention, the `constructor` of a struct is always implemented with an `fn new()` function. To create a new user, you would call `let my_new_user = User::new();`
+Unlike other languages, `new` is not a keyword in Rust. By way of convention, the `constructor` of a struct is always implemented with an `fn new()` function. To create a user, you would call `let my_new_user = User::new();`
 
-You'll also notice there is no `return` keyword at the end of a function. The `;` indicates the end of a line, much like in C#. But if you leave the `;` off, the compiler assumes you want to return the value. The `new_user` variable demonstrates that in the above code sample.
+You'll also notice there is no `return` keyword at the end of a function. The `;` indicates the end of a line, much like in C#. If you leave the `;` off, the compiler assumes you want to return the value. The `new_user` variable demonstrates that in the above code sample.
 
 ## What is `self`
 
-`self` can be one of the more confusing aspects of functions that are defined on structs. But once you understand the four different variations and what they all do, it's a little bit simpler.
+`self` can be one of the more confusing aspects of functions that are defined on structs. After you understand the four different variations and what they all do, it's a little bit simpler.
 
 ### No `self` parameter
 
@@ -107,7 +107,7 @@ error[E0596]: cannot borrow `user` as mutable, as it is not declared as mutable
 This takes ownership of the instance. When you use this, the original instance is consumed by the method. This is rare and typically used when transforming an object into something else, after which the original is no longer needed.
 
 ```rust showLineNumbers
-// Using just 'self' is a rare case where you want to take ownership of the original instance and use something new
+// Using 'self' is a rare case where you want to take ownership of the original instance and use something new
 // calling this function will prevent the original instance from being used, as this function
 // takes ownership and then drop the original instance
 fn update_to_premium(self) -> PremiumUser {
@@ -119,4 +119,4 @@ These different variations of `self` make Rust's ownership system explicit in yo
 The `return` keyword does still exist, and you can use that to return a value from a function early.
 The `return` keyword does still exist, and you can use that to return a value from a function early.
 
-And now we get on to one of the most powerful data types in the Rust ecosystem, something that might not get the same praise in .NET. The `Enum`
+And now you get on to one of the most powerful data types in the Rust ecosystem, something that might not get the same praise in .NET. The `Enum`

@@ -34,11 +34,11 @@ Think your `User` enum, your `UserDetails` struct and the actual business logic 
 
 ### Ports
 
-Define interfaces that the core uses to communicate with the outside world, or ports that the outside world uses to call business logic. E.g. `CreateRecipeCommandHandler` or `UserRepository`. In .NET, your ports would typically be implemented as interfaces, which are then implemented by...
+Define interfaces that the core uses to communicate with the outside world, or ports that the outside world uses to call business logic. For example `CreateRecipeCommandHandler` or `UserRepository`. In .NET, your ports would typically be implemented as interfaces, which are then implemented by.
 
 ### Adapters
 
-Implement the interfaces defined by ports, connecting external systems to your core. Adapters can either be **driving adapters** or **driven adapters**. A driving adapter calls into the business logic, e.g. your web framework or a background thread reading messages from a queue. A driven adapter makes calls out to external dependencies e.g. databases, messaging middlewares etc
+Implement the interfaces defined by ports, connecting external systems to your core. Adapters can either be **driving adapters** or **driven adapters**. A driving adapter calls into the business logic, for example your web framework or a background thread reading messages from a queue. A driven adapter makes calls out to external dependencies for example databases, messaging middlewares etc
 
 This pattern allows you to isolate your core business logic from external dependencies, making it more testable and maintainable.
 

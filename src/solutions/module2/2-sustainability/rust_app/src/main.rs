@@ -41,7 +41,7 @@ fn main() {
 
     let start_rss = get_process_memory_mb();
     println!("Initial RSS (physical memory): {} MB", start_rss);
-    println!("Starting memory allocation test on all CPU cores...");
+    println!("Starting memory allocation test on all CPU cores.");
     println!("Press Ctrl+C to exit");
     println!();
 
@@ -127,7 +127,7 @@ fn main() {
         }
     }
 
-    println!("\nExiting program and cleaning up...");
+    println!("\nExiting program and cleaning up.");
     // In Rust, all resources are automatically cleaned up when they go out of scope
     // No explicit cleanup needed
 }

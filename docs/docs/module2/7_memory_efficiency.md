@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # Memory Efficiency
 
-This document explores how Rust's design principles lead to better resource efficiency compared to .NET. We'll analyze concrete examples from the codebase that demonstrate these differences and explain the underlying mechanisms.
+This document explores how Rust's design principles lead to better resource efficiency compared to .NET. You'll analyze concrete examples from the codebase that demonstrate these differences and explain the underlying mechanisms.
 
 ## Conceptual Overview
 
@@ -50,7 +50,7 @@ Benefits of this approach:
 
 ## Analyzing the Sustainability Examples
 
-Let's examine the specific [examples](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/2-sustainability) from the codebase that demonstrate these differences.
+Examine the specific [examples](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/2-sustainability) from the codebase that demonstrate these differences.
 
 ### .NET Example Analysis
 
@@ -80,7 +80,7 @@ while (!Console.KeyAvailable)
     var gen2Collections = GC.CollectionCount(2);
     var uptime = (DateTime.Now - startTime).TotalSeconds;
     
-    // [Output statistics code...]
+    // [Output statistics code.]
     
     // Every 10 seconds, create long-lived objects that survive collections
     if (uptime % 10 < 1)
@@ -180,7 +180,7 @@ for id in 0..num_cpus {
 loop {
     thread::sleep(Duration::from_secs(1));
     
-    // [Statistics calculation code...]
+    // [Statistics calculation code.]
     
     // Create periodic memory pressure spike (similar to .NET example)
     if elapsed % 10.0 < 1.0 && elapsed > 1.0 {
@@ -218,7 +218,7 @@ fn allocate_memory(
             allocated.fetch_add(size, Ordering::Relaxed);
             allocations_count.fetch_add(1, Ordering::Relaxed);
             
-            // [Tracking code...]
+            // [Tracking code.]
             
             // Small delay to simulate work
             thread::sleep(Duration::from_millis(1));
@@ -260,9 +260,9 @@ fn allocate_memory(
 1. **Scoped Memory**: The code explicitly uses scopes `{}` to control when memory is freed:
    ```rust showLineNumbers
    {
-       // Memory allocated here...
+       // Memory allocated here.
        let _large_vec = vec![0u8; size];
-       // ...work with the memory...
+       // .work with the memory.
    }
    // Memory is automatically freed HERE, at end of scope
    ```

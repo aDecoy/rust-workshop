@@ -23,4 +23,4 @@ Rust's borrow checker enforces strict rules about references:
 - **Compile-Time Verification**: These rules are enforced at compile time, preventing entire classes of bugs.
 - **Error Messages**: When you violate these rules, the compiler gives you detailed messages explaining what went wrong and how to fix it.
 
-This might seem restrictive at first, but it's this very restriction that enables Rust to guarantee thread safety and prevent data races without runtime checks. As you become familiar with the borrow checker, you'll find yourself thinking differently about how data flows through your program, leading to more robust designs.
+This might seem restrictive at first, but it's this restriction that enables Rust to guarantee thread safety and prevent data races without runtime checks. As you become familiar with the borrow checker, you'll find yourself thinking differently about how data flows through your program, leading to more robust designs.

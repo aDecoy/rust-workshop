@@ -35,4 +35,4 @@ Here's how package management works in Rust:
 
 3. **Installing dependencies** - When you run `cargo build` or `cargo run` for the first time, Cargo automatically downloads and compiles your dependencies.
 
-Cargo is more than just a package manager - it's a complete build system. It handles compiling your code, running tests, generating documentation, and more. As a .NET developer, you can think of it as combining the functionality of `dotnet`, NuGet, and MSBuild into a single tool.
+Cargo is more than a package manager - it's a complete build system. It handles compiling your code, running tests, generating documentation, and more. As a .NET developer, you can think of it as combining the functionality of `dotnet`, NuGet, and MSBuild into a single tool.

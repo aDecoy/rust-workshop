@@ -48,6 +48,6 @@ features = [
 
 The starter code for this challenge is [available on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/examples/module9/rust_app).
 
-If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module9/rust_app). But try it on your own first, if you're finding it difficult that's good. It means you're learning.
+If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module9/rust_app). Try it on your own first, if you're finding it difficult that's good. It means you're learning.
 
 Good luck! Remember that comprehensive testing is a key part of building reliable Rust applications, and Rust's type system works with you to catch many potential issues at compile time.

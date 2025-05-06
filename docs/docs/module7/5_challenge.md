@@ -30,7 +30,7 @@ Remember to think about whether the new data types you define should be in the `
 
 The starter code for this challenge is [available on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/examples/module7/rust_app).
 
-If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module7/rust_app). But try it on your own first, if you're finding it difficult that's good. It means you're learning.
+If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module7/rust_app). Try it on your own first, if you're finding it difficult that's good. It means you're learning.
 
 By completing this challenge, you'll create a much more flexible application architecture that allows you to swap out data access implementations (for example, to use a database in the future) without changing your business logic or API handlers.
 

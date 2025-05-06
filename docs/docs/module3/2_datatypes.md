@@ -32,13 +32,13 @@ println!("{}", string_example);
 
 :::important
 
-If you set a variable equal to a string without setting the type, e.g. `let string = "hello"` it will default to a `&str`. If you need a growable string you can use the `to_string()` function.
+If you set a variable equal to a string without setting the type, for example `let string = "hello"` it will default to a `&str`. If you need a growable string you can use the `to_string()` function.
 
 :::
 
 ## Integers and Decimals
 
-Rust includes a large number of numeric types, and you'll get very used to setting both the type (integer, floating point) but also setting the size in bytes (`i32`, `f64`). This affects how many numbers your type can represent, and if it can handle negative numbers.
+Rust includes many numeric types, and you'll get used to setting both the type (integer, floating point) but also setting the size in bytes (`i32`, `f64`). This affects how many numbers your type can represent, and if it can handle negative numbers.
 
 ```rust showLineNumbers
 let integer_example: i32 = 10;
@@ -92,7 +92,7 @@ println!("{}", bool_example);
 
 Another interesting thing about Rust is that `null` does not exist. Yep, you read that right. No more `Object reference not set to the instance of an object` errors.
 
-But how do you model a variable that may or may not have a value. That's where the `Option` enum comes in:
+How do you model a variable that may or may not have a value? That's where the `Option` enum comes in:
 
 ## Control Flow
 
@@ -230,7 +230,7 @@ Where T is a generic type parameter that can be any type.
 
 ### Using Option
 
-Here's a simple example of using Option:
+Here's an example of using Option:
 
 ```rust showLineNumbers
 let mut optional_string: Option<String> = None;

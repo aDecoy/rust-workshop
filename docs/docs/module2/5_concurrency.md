@@ -3,7 +3,7 @@ sidebar_position: 5
 ---
 # Concurrency Model
 
-Finally, concurrency works very differently between the two languages.
+Finally, concurrency works differently between the two languages.
 
 In .NET, you use various synchronization primitives to avoid race conditions:
 
@@ -28,4 +28,4 @@ Rust's approach to concurrency eliminates many common bugs before your program e
 
 As you work through this workshop, you'll find that these differences, while challenging at first, are what give Rust its unique strengths. Rather than fighting against them, learn to work with them. The Rust compiler will be your guide, pointing out potential issues and helping you write safer, more efficient code.
 
-Remember that it's normal to feel frustrated at times—every Rust developer has experienced the same learning curve. But the payoff is worth it: you'll write code that's more reliable, more efficient, and free from entire classes of bugs that plague other languages.
+Remember that it's normal to feel frustrated at times—every Rust developer has experienced the same learning curve. The payoff is worth it: you'll write code that's more reliable, more efficient, and free from entire classes of bugs that plague other languages.

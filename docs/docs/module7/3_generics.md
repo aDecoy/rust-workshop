@@ -41,7 +41,7 @@ async fn register_user<TDataAccess: DataAccess + Send + Sync>(
     State(state): State<Arc<AppState<TDataAccess>>>,
     Json(payload): Json<RegisterUserRequest>,
 ) -> (StatusCode, Json<UserDetails>) {
-    // Implementation...
+    // Implementation.
 }
 ```
 

@@ -19,9 +19,9 @@ For you as a .NET developer, Axum serves a similar role to ASP.NET Core, but wit
 3. **Extractors**: Types that extract data from requests
 4. **Middleware**: Components that process requests before they reach handlers
 
-## Building a Simple API with Axum
+## Build a Web API with Axum
 
-Let's examine how to build a basic API in Rust compared to .NET:
+Examine how to build a basic API in Rust compared to .NET:
 
 ### Rust (with Axum):
 

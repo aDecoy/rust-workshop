@@ -19,7 +19,7 @@ enum User {
 }
 ```
 
-You can also add functions to your enums. Yep, you read that right.... Enums can have logic attached to them:
+You can also add functions to your enums. Yep, you read that right.. Enums can have logic attached to them:
 
 ```rust showLineNumbers
 enum User {
@@ -28,7 +28,7 @@ enum User {
 }
 
 impl User {
-    // When you create a new user, you default it to a Standard User
+    // When you create a user, you default it to a Standard User
     fn new(email_address: &str, name: &str) -> User {
         User::Standard { user_details: UserDetails {
             email_address: email_address.to_string(), name: name.to_string(), age: None

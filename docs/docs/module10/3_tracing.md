@@ -98,7 +98,7 @@ fn init_tracing_subscriber() -> OtelGuard {
 }
 ```
 
-Once you've got your subscriber configured, you can then add traces and spans to your application in two ways.
+After you've got your subscriber configured, you can then add traces and spans to your application in two ways.
 
 ## Attribute tracing
 

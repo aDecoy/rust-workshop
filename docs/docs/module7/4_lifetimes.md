@@ -38,7 +38,7 @@ The compiler's lifetime system prevents such errors at compile time.
 ### Common Lifetime Patterns
 
 1. **`'static`**: References that live for the entire program duration
-2. **Elided lifetimes**: Simple cases where the compiler can infer lifetimes
+2. **Elided lifetimes**: Cases where the compiler can infer lifetimes
 3. **Lifetime bounds on generics**: Ensuring references in generic types are valid
 
 When you're encountering errors with lifetimes, you'll often see the compiler recommend a `'static` lifetime. Or, that a simply throwing on a `'static` lifetime makes the problem go away. This is almost **never** the right answer. It might seem like hard work, but the strictness of the Rust compiler is intended to force you to think through memory management.

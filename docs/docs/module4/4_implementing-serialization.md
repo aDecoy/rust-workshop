@@ -90,7 +90,7 @@ struct UserDetails {
 }
 ```
 
-This will convert all field names to camelCase in JSON (e.g., `emailAddress` instead of `email_address`).
+This will convert all field names to camelCase in JSON (for example, `emailAddress` instead of `email_address`).
 
 ### Skipping Fields
 

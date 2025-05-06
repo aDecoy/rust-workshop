@@ -7,7 +7,7 @@ sidebar_position: 1
 Rust has a built-in testing framework that's simple yet powerful. The testing philosophy is:
 
 1. **Tests live close to the code they test**: Unit tests often live in the same file as the implementation
-2. **No separate test framework needed**: Tests run with a simple `cargo test` command
+2. **No separate test framework needed**: Tests run with the `cargo test` command
 3. **First-class support in the language**: Testing is a core feature of Rust, not an afterthought
 4. **Compile-time guarantees reduce need for some tests**: Many bugs caught by tests in other languages are caught by the compiler in Rust
 
@@ -105,15 +105,15 @@ For tests that need similar setup and teardown, you can use Rust's Drop trait:
 
 ```rust showLineNumbers
 struct TestFixture {
-    // Test data and state...
+    // Test data and state.
     db_connection: PgPool,
 }
 
 impl TestFixture {
     async fn new() -> Self {
-        // Setup code...
+        // Setup code.
         let db_connection = PgPool::connect("test_db_url").await.unwrap();
-        // Run migrations, seed data...
+        // Run migrations, seed data.
         
         Self { db_connection }
     }
@@ -121,7 +121,7 @@ impl TestFixture {
 
 impl Drop for TestFixture {
     fn drop(&mut self) {
-        // Cleanup code...
+        // Cleanup code.
         // This runs when the fixture goes out of scope
     }
 }
@@ -130,7 +130,7 @@ impl Drop for TestFixture {
 async fn test_with_fixture() {
     let fixture = TestFixture::new().await;
     
-    // Test using fixture...
+    // Test using fixture.
     let result = get_user(&fixture.db_connection, "test@example.com").await;
     assert!(result.is_ok());
     

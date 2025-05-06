@@ -68,7 +68,7 @@ To connect to PostgreSQL, you'll need to:
 2. Create a connection pool
 3. Handle connection errors appropriately
 
-Let's examine how this is implemented:
+Examine how this is implemented:
 
 ```rust showLineNumbers
 use std::env;
@@ -179,7 +179,7 @@ To maintain the abstraction from the previous module, you'll implement the `Data
 #[async_trait::async_trait]
 impl DataAccess for PostgresUsers {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError> {
-        // SQL query implementation...
+        // SQL query implementation.
     }
 
     async fn store(&self, user: User) -> Result<(), ApplicationError> {

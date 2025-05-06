@@ -8,7 +8,7 @@ For almost any database you'll work with, you need to provide some kind of conne
 
 Almost all applications I've ever worked on, and I'm sure it's the same for you, need configuration. Whether that be database connection strings, API secrets, feature flags, or any other kind of configuration that's going to change the behaviour of your app at runtime. The important part of that sentence __at runtime__. Separating configuration from code allows you to build and ship your application once, and then configure it differently for different environments. This is a key part of the [12 factor app methodology](https://12factor.net/).
 
-Imagine if every time you moved your application between environments you had to re-compile it and substitute in a new set of configuration values. If you went as far as to hard-code the values into your application, you'd actually need to go and make changes to your codebase every time you wanted to ship it to a new environment. That's not a great place to be. The litmus test for this that comes from the [config section of the 12 factor app methodology](https://12factor.net/config) is that you should be able to open source your code at any moment, without compromising any credentials.
+Imagine if every time you moved your application between environments you had to re-compile it and substitute in a new set of configuration values. If you went as far as to hard-code the values into your application, you'd actually need to go and make changes to your codebase every time you wanted to ship it to a new environment. That's not a great place to be. The litmus test for this that comes from the [config section of the 12 factor app methodology](https://12factor.net/config) is that you want to be able to open source your code at any moment, without compromising any credentials.
 
 ## The Figment Crate
 
@@ -20,7 +20,7 @@ The [`config`](https://github.com/rust-cli/config-rs/tree/main) crate is also po
 
 :::
 
-Figment is a configuration management library for Rust that allows you to define your configuration in a structured way. It supports loading configuration from a variety of sources, including environment variables, strings and files. It also has a really nice API for defining your configuration in a structured way and then extracting that configuration into a custom struct. Let's see what that looks like:
+Figment is a configuration management library for Rust that allows you to define your configuration in a structured way. It supports loading configuration from a variety of sources, including environment variables, strings and files. It also has a really nice API for defining your configuration in a structured way and then extracting that configuration into a custom struct. See what that looks like:
 
 ```rust showLineNumbers
 #[derive(Deserialize)]
@@ -43,12 +43,12 @@ async fn main() -> Result<(), ApplicationError> {
 }
 ```
 
-Let's walk through this step by step:
+Walk through this step by step:
 
-1. We define a struct called `Config` that has one fields: `connection_string`. We also derive the `Deserialize` trait on this struct so that we can easily convert it to and from JSON.
-2. The first thing we do in the `main` function is to create a new Figment.
-3. We then call the `merge` function on the Figment instance. The `Env::raw()` function tells Figment to load all environment variables.
-4. We then call the `extract` function on the Figment instance to extract the configuration into a `Result<Configuration, Error>`, handling errors and returning the `Config` struct.
+1. You define a struct called `Config` that has one fields: `connection_string`. You also derive the `Deserialize` trait on this struct so that you can easily convert it to and from JSON.
+2. The first thing you do in the `main` function is to create a Figment.
+3. You then call the `merge` function on the Figment instance. The `Env::raw()` function tells Figment to load all environment variables.
+4. You then call the `extract` function on the Figment instance to extract the configuration into a `Result<Configuration, Error>`, handling errors and returning the `Config` struct.
 5. The connection string property is then passed to the `PostgresUsers` struct to initialize the database connection
 
 :::important
@@ -59,5 +59,5 @@ In practice, this allows you to create hierarchial configuration.
 
 :::
 
-To actual use this configuraiton, you can either set the `connection_string` environment variable or create a new file called `config.json` in the same folder as your `Cargo.toml` file.
+To actual use this configuraiton, you can either set the `connection_string` environment variable or create a file called `config.json` in the same folder as your `Cargo.toml` file.
 

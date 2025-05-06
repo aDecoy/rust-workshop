@@ -21,7 +21,7 @@ And oops! There's a problem:
 
 **error[E0384]: cannot assign twice to immutable variable `integer_example`**
 
-Let's see if you can go and fix it... Go on, try on your own.
+See if you can go and fix it. Go on, try on your own.
 
 If you delete the line assigning the `integer_example` then congrats 🎉 You're a Rust developer now.
 
@@ -60,4 +60,4 @@ println!("{}", str_example);
 // PRINTS: And can be edited
 ```
 
-With shadowing, you can declare a new variable with the same name as a previous variable. This is different from mutability - you're creating a completely new variable that just happens to have the same name. This is particularly useful when you need to change the type of a variable, while keeping the same name.
+With shadowing, you can declare a new variable with the same name as a previous variable. This is different from mutability - you're creating a completely new variable that happens to have the same name. This is particularly useful when you need to change the type of a variable, while keeping the same name.

@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Structuring Code Base
 
-Let's look at how you can restructure your application using modules and the Ports and Adapters architecture:
+Look at how you can restructure your application using modules and the Ports and Adapters architecture:
 
 ## Step 1: Identify Your Core Domain
 
@@ -46,7 +46,7 @@ impl User {
         // Implementation
     }
     
-    // Other methods...
+    // Other methods.
 }
 ```
 
@@ -82,17 +82,17 @@ mod data_access;
 
 use crate::core::{LoginRequest, RegisterUserRequest, User, UserDetails};
 use crate::data_access::SharedState;
-use axum::{/* ... */};
+use axum::{/* . */};
 
 #[tokio::main]
 async fn main() {
     // Create a new router
     let app = Router::new()
         .route("/users", post(register_user))
-        // Other routes...
+        // Other routes.
         .layer(Extension(SharedState::default()));
 
-    // Start the server...
+    // Start the server.
 }
 
 async fn register_user(
@@ -105,7 +105,7 @@ async fn register_user(
     (StatusCode::CREATED, Json(user.details().clone()))
 }
 
-// Other handler functions...
+// Other handler functions.
 ```
 
 :::info

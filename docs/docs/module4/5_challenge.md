@@ -17,6 +17,6 @@ Now it's time to put what you've learned into practice! In this module's challen
 
 The starter code for this challenge is [available on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/examples/module4/rust_app).
 
-If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module4/rust_app). But try it on your own first, if you're finding it difficult that's good. It means you're learning.
+If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module4/rust_app). Try it on your own first, if you're finding it difficult that's good. It means you're learning.
 
 Good luck, and remember that working with JSON in Rust gives you the benefits of strong type checking while maintaining high performance!

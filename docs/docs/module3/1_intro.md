@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Intro
 
-Let's get into starting to model the business domain. No low level systems programming here, let's build something real together.
+You'll now start to model the business domain. No low level systems programming here, let's build something real together.
 
 If you recall, functionality wise you need to build a service that allows users to:
 

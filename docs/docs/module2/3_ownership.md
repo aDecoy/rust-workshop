@@ -11,7 +11,7 @@ In .NET, multiple parts of your code can "own" an object simultaneously. Conside
 ```csharp showLineNumbers
 var data = new List<int> { 1, 2, 3 };
 ProcessList(data);
-// We can still use data here
+// You can still use data here
 data.Add(4);
 
 void ProcessList(List<int> list) {
@@ -23,7 +23,7 @@ void ProcessList(List<int> list) {
 In Rust, every value has exactly one owner:
 - **Transfer of Ownership**: When you pass a value to a function or assign it to another variable, ownership transfers unless you explicitly borrow it (more on that later).
 - **Move Semantics**: Assigning a value to another variable moves it, making the original variable invalid.
-- **Copy Types**: Simple types like integers implement the `Copy` trait and are automatically copied instead of moved.
+- **Copy Types**: Types like integers implement the `Copy` trait and are automatically copied instead of moved.
 
 :::info
 

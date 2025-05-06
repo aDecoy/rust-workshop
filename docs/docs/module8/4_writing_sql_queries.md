@@ -51,7 +51,7 @@ To maintain the abstraction from the previous module, you'll implement the `Data
 #[async_trait::async_trait]
 impl DataAccess for PostgresUsers {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError> {
-        // SQL query implementation...
+        // SQL query implementation.
     }
 
     async fn store(&self, user: User) -> Result<(), ApplicationError> {

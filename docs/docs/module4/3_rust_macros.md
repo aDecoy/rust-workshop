@@ -6,11 +6,11 @@ sidebar_position: 3
 
 Macros are, in essence, a tool for making the Rust compiler write code for you. There are two different types of macros, declaritive and procedural, that give you the flexibility to implement many different forms of code generation.
 
-For the purposes of this workshop, you won't actually be writing any macros yourself. But it's important to understand what they are, and what they are doing under the hood.
+For the purposes of this workshop, you won't actually be writing any macros yourself. It's important to understand what they are, and what they are doing under the hood.
 
 ## Declarative Macros
 
-Declarative macros (also called "macros by example" or "macro_rules! macros") allow you to write code that resembles a match expression but operates on Rust code at compile time. A simple example is the `println!` macro. When you write `println("Hello {}", "James")` at compile time that unwraps to:
+Declarative macros (also called "macros by example" or "macro_rules! macros") allow you to write code that resembles a match expression but operates on Rust code at compile time. An example is the `println!` macro. When you write `println("Hello {}", "James")` at compile time that unwraps to:
 
 ```rust showLineNumbers
 std::io::_print(format_args!("Hello {}", "James"));

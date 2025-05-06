@@ -12,14 +12,14 @@ static void Main(object[] args){
 }
 ```
 
-And then Microsoft went and made things all simpler, which means a .NET application still has a `Program.cs` file, but now it looks a little bit something like this:
+And then Microsoft went and made things all simpler, which means a .NET application still has a `Program.cs` file, now it looks a little bit something like this:
 
 ```csharp
 // See https://aka.ms/new-console-template for more information
 Console.WriteLine("Hello, World!");
 ```
 
-Now if you squint and look at this piece of code, go on... Really squint... I'm sure you can see the similarities with Rust:
+Now if you squint and look at this piece of code, go on. Really squint. I'm sure you can see the similarities with Rust:
 
 ```rust showLineNumbers showLineNumbers
 fn main() {
@@ -34,7 +34,7 @@ The entrypoint to all Rust programs is `main()`. It takes no arguments, and retu
 
 :::
 
-Yep, you've got a function (in Rust world, we call them functions not methods) called main. And then you're printing a line (`println!`) to the console. Code blocks, or scopes, are wrapped in curly braces: `{}`.
+Yep, you've got a function (in Rust world, you call them functions not methods) called main. And then you're printing a line (`println!`) to the console. Code blocks, or scopes, are wrapped in curly braces: `{}`.
 
 Pretty similar to .NET right?
 
