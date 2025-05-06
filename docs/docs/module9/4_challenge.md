@@ -11,24 +11,40 @@ Now it's time to apply what you've learned about testing in Rust! In this module
    - Test password hashing and verification functionality
    - Ensure that the business logic in your core domain behaves as expected
 
-2. Create an in-memory mock for DataAccess:
+2. Create a mock implementation of the DataAccess trait:
    - Implement a test-specific version of your DataAccess trait
    - Make it store data in memory for testing purposes
    - Use it to test your API handlers without needing a real database
 
 3. Write integration tests for API endpoints:
-   - Create tests in the `tests/` directory that verify your API endpoints
-   - Test successful registration, login, and user retrieval
-   - Test error cases like duplicate registration and invalid login
+   - Create a new directory and for running integration tests `mkdir integration-tests && cd integration-tests && cargo init`
+   - Test successful registration and login
 
-4. Add property-based tests:
-   - Use the proptest crate to test properties of your password hashing
-   - Verify that different inputs always produce different hashes
-   - Test that verification always works for the correct password
+::: info
 
-5. Ensure all tests are passing:
+You'll need a couple of additional crates for writing integration tests. The dependencies in your `Cargo.toml` should be:
+
+```toml
+[dev-dependencies]
+tokio = { version = "1.38", features = ["macros", "rt-multi-thread"] }
+serde_json = "1.0"
+reqwest = { version = "0.12", default-features = false, features = [
+  "rustls-tls",
+  "http2",
+] }
+
+[dependencies.uuid]
+version = "1.16.0"
+# Lets you generate random UUIDs
+features = [
+    "v4",
+]
+```
+
+:::
+
+4. Ensure all tests are passing:
    - Run `cargo test` and fix any failing tests
-   - Make sure your test coverage is comprehensive
 
 The starter code for this challenge is [available on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/examples/module9/rust_app).
 

@@ -4,84 +4,110 @@ sidebar_position: 1
 
 # Mocking in Rust
 
-Mocking in Rust typically leverages traits. By creating trait implementations specifically for testing:
+Mocking in Rust typically leverages traits. By creating trait implementations specifically for testing. You can implement these mock inside your test module:
 
 ```rust showLineNumbers
-// Define a trait for the behavior we want to mock
-#[async_trait::async_trait]
-pub trait DataAccess {
-    async fn get_user(&self, id: &str) -> Result<User, Error>;
-    async fn save_user(&self, user: &User) -> Result<(), Error>;
-}
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+    use super::*;
+    use crate::core::{ApplicationError, User};
+    use std::sync::Arc;
 
-// Create a mock implementation for testing
-struct MockDataAccess {
-    // You can store expected results or track calls
-    users: HashMap<String, User>,
-}
+    // Create a mock implementation for testing
+    struct MockDataAccess {
+        // You can store expected results or track calls
+        users: HashMap<String, User>,
+    }
 
-#[async_trait::async_trait]
-impl DataAccess for MockDataAccess {
-    async fn get_user(&self, id: &str) -> Result<User, Error> {
-        match self.users.get(id) {
-            Some(user) => Ok(user.clone()),
-            None => Err(Error::NotFound),
+    impl MockDataAccess {
+        pub fn new() -> Self {
+            Self {
+                users: HashMap::new(),
+            }
         }
     }
-    
-    async fn save_user(&self, user: &User) -> Result<(), Error> {
-        // For testing, just return Ok
-        Ok(())
-    }
-}
 
-// Test using the mock
-#[tokio::test]
-async fn test_user_service() {
-    // Setup mock
-    let mut mock_data = MockDataAccess { users: HashMap::new() };
-    mock_data.users.insert("123".to_string(), User::new("123", "Test User"));
-    
-    // Create service with mock
-    let service = UserService::new(mock_data);
-    
-    // Test service
-    let user = service.get_user("123").await.unwrap();
-    assert_eq!(user.name, "Test User");
+    #[async_trait::async_trait]
+    impl DataAccess for MockDataAccess {
+        async fn with_email_address(&self, email_address: &str) -> std::result::Result<User, ApplicationError> {
+            if let Some(user) = self.users.get(email_address) {
+                Ok(user.clone())
+            } else {
+                Err(ApplicationError::UserDoesNotExist)
+            }
+        }
+
+        async fn store(&self, user: User) -> std::result::Result<(), ApplicationError> {
+            // Simulate storing the user
+            Ok(())
+        }
+    }
 }
 ```
 
-This approach:
-- Uses Rust's traits for abstraction
-- Allows easy substitution of real implementations with test doubles
-- Maintains type safety throughout
+### The Mockall crate
 
-## Property-Based Testing
+Alternatively, you can use the [`mockall`](https://docs.rs/mockall/latest/mockall/) crate, which provides similar functionality to the [`moq`](https://github.com/devlooped/moq) library in .NET.
 
-Property-based testing is a powerful technique where you define properties your code should satisfy, and the testing framework generates random inputs to verify these properties.
+With mockall, you add the `#[automock]` macro to your trait, and that will generate a mock implementation of the trait that you can use in your tests.
 
-Using the `proptest` crate:
 
 ```rust showLineNumbers
-use proptest::prelude::*;
+use mockall::{automock, mock};
 
-proptest! {
-    #[test]
-    fn addition_is_commutative(a in 0..100i32, b in 0..100i32) {
-        assert_eq!(add(a, b), add(b, a));
-    }
-    
-    #[test]
-    fn addition_is_associative(a in 0..100i32, b in 0..100i32, c in 0..100i32) {
-        assert_eq!(add(add(a, b), c), add(a, add(b, c)));
+#[async_trait::async_trait]
+#[automock]
+pub trait DataAccess {
+    async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError>;
+    async fn store(&self, user: User) -> Result<(), ApplicationError>;
+}
+```
+
+You can also dynamically include the `#[automock] macro only if compiling for a test run, and excluding the mock code for a release build.
+
+```rust showLineNumbers
+// Only include the following line of code if a test is running
+#[cfg(any(test, feature = "mocks"))]
+use mockall::{automock, predicate::*};
+
+#[async_trait::async_trait]
+// Add the `automock` macro if a test run
+#[cfg_attr(any(test, feature = "mocks"), automock)]
+pub trait DataAccess {
+    async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError>;
+    async fn store(&self, user: User) -> Result<(), ApplicationError>;
+}
+```
+
+Alternatively, you can use the `mock!` macro to generate a mock implementation for a trait outside of the current crate or module. This is useful for your case if you want to test the code in `main.rs`, but using a mock of the `DataAccess` trait which is defined in the `core` module. It also means you can keep the code in your core library clean from additional macros.
+
+```rust showLineNumbers
+mock! {
+    DataAccess{}
+    #[async_trait::async_trait]
+    impl DataAccess for DataAccess {
+        async fn with_email_address(&self, email_address: &str) -> std::result::Result<User, ApplicationError>;
+        async fn store(&self, user: User) -> std::result::Result<(), ApplicationError>;
     }
 }
 ```
 
-Property-based testing is particularly useful for:
-- Complex algorithms where edge cases are hard to identify
-- Functions where multiple properties can be verified
-- Finding unexpected bugs with unusual inputs
+Once you've defined your mock, you can then configure how it functions as part of your test run. The name of the generated struct will always be prefixed with the word `Mock`. For example, if your trait was called `DataAccess` then the auto-generated implementation would be called `MockDataAccess` and you would initialize it using the `::new()` function:
+
+```rust showLineNumbers
+// Initialize the mock implementation
+let mut mock_data_access = MockDataAccess::new();
+    mock_data_access
+        // Configure the `store()` function
+        .expect_store()
+        // Expect the function to be passed a user struct, with the email address set to test@test.com
+        .withf(|user| {
+            user.email_address() == "test@test.com".to_string()
+        })
+        // Define the return value
+        .return_once(move |_| Ok(()));
+```
 
 ## Test-Driven Development in Rust
 
@@ -113,35 +139,3 @@ cargo test -- --nocapture
 # Run tests in release mode (optimized)
 cargo test --release
 ```
-
-## Your Challenge
-
-Now it's time to apply what you've learned about testing in Rust! In this module's challenge, you'll:
-
-1. Write unit tests for core functionality:
-   - Add tests for the User model to verify email validation works correctly
-   - Test password hashing and verification functionality
-   - Ensure that the business logic in your core domain behaves as expected
-
-2. Create an in-memory mock for DataAccess:
-   - Implement a test-specific version of your DataAccess trait
-   - Make it store data in memory for testing purposes
-   - Use it to test your API handlers without needing a real database
-
-3. Write integration tests for API endpoints:
-   - Create tests in the `tests/` directory that verify your API endpoints
-   - Test successful registration, login, and user retrieval
-   - Test error cases like duplicate registration and invalid login
-
-4. Add property-based tests:
-   - Use the proptest crate to test properties of your password hashing
-   - Verify that different inputs always produce different hashes
-   - Test that verification always works for the correct password
-
-5. Ensure all tests are passing:
-   - Run `cargo test` and fix any failing tests
-   - Make sure your test coverage is comprehensive
-
-The starter code is available in `src/module9/rust_app`, and you can check your solution against `src/module9/rust_app_final`.
-
-Good luck! Remember that comprehensive testing is a key part of building reliable Rust applications, and Rust's type system works with you to catch many potential issues at compile time.

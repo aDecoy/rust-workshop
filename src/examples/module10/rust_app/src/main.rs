@@ -124,3 +124,95 @@ async fn get_user_details<TDataAccess: DataAccess + Send + Sync>(
         },
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+    use super::*;
+    use crate::core::{ApplicationError, User};
+    use std::sync::Arc;
+    use mockall::mock;
+
+    // Create a mock implementation for testing
+    struct ManualMockDataAccess {
+        // You can store expected results or track calls
+        users: HashMap<String, User>,
+    }
+
+    impl ManualMockDataAccess {
+        pub fn new() -> Self {
+            Self {
+                users: HashMap::new(),
+            }
+        }
+    }
+    
+    mock! {
+        DataAccess{}
+        #[async_trait::async_trait]
+        impl DataAccess for DataAccess {
+            async fn with_email_address(&self, email_address: &str) -> std::result::Result<User, ApplicationError>;
+            async fn store(&self, user: User) -> std::result::Result<(), ApplicationError>;
+        }
+    }
+
+    #[async_trait::async_trait]
+    impl DataAccess for ManualMockDataAccess {
+        async fn with_email_address(&self, email_address: &str) -> std::result::Result<User, ApplicationError> {
+            if let Some(user) = self.users.get(email_address) {
+                Ok(user.clone())
+            } else {
+                Err(ApplicationError::UserDoesNotExist)
+            }
+        }
+
+        async fn store(&self, user: User) -> std::result::Result<(), ApplicationError> {
+            // Simulate storing the user
+            Ok(())
+        }
+    }
+
+    #[tokio::test]
+    async fn test_register_user_with_manual_mock() {
+        let mock_data_access = ManualMockDataAccess::new();
+        let shared_state = Arc::new(AppState {
+            data_access: mock_data_access
+        });
+
+        let (status, response) = register_user(
+            State(shared_state),
+            Json(RegisterUserRequest {
+                email_address: "test@test.com".to_string(),
+                name: "Test User".to_string(),
+                password: "Testing!23".to_string(),
+            }),
+        ).await;
+        
+        assert_eq!(status, StatusCode::CREATED);
+    }
+
+    #[tokio::test]
+    async fn test_register_user_with_mock_all() {
+        let mut mock_data_access = MockDataAccess::new();
+        mock_data_access
+            .expect_store()
+            .withf(|user| {
+                user.email_address() == "test@test.com".to_string()
+            })
+            .return_once(move |_| Ok(()));
+        let shared_state = Arc::new(AppState {
+            data_access: mock_data_access
+        });
+
+        let (status, response) = register_user(
+            State(shared_state),
+            Json(RegisterUserRequest {
+                email_address: "test@test.com".to_string(),
+                name: "Test User".to_string(),
+                password: "Testing!23".to_string(),
+            }),
+        ).await;
+
+        assert_eq!(status, StatusCode::CREATED);
+    }
+}

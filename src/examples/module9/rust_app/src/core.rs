@@ -64,6 +64,8 @@ pub enum User {
 impl User {
     // no 'self' at all defines a static method. Called using User::new()
     pub fn new(email_address: &str, name: &str, password: &str) -> Result<User, ApplicationError> {
+        User::email_is_valid(email_address)?;
+
         Ok(User::Standard {
             user_details: UserDetails {
                 email_address: email_address.to_string(),
@@ -191,5 +193,47 @@ impl User {
             Ok(_) => Ok(()),
             Err(_) => Err(ApplicationError::IncorrectPassword)
         } 
+    }
+
+    fn password_is_valid(password: &str) -> Result<(), ApplicationError> {
+        if password.len() < 8 {
+            return Err(ApplicationError::ApplicationError("Password must be at least 8 characters long".to_string()));
+        }
+        if !password.chars().any(|c| c.is_uppercase()) {
+            return Err(ApplicationError::ApplicationError("Password must contain at least one uppercase letter".to_string()));
+        }
+        if !password.chars().any(|c| c.is_lowercase()) {
+            return Err(ApplicationError::ApplicationError("Password must contain at least one lowercase letter".to_string()));
+        }
+        if !password.chars().any(|c| c.is_digit(10)) {
+            return Err(ApplicationError::ApplicationError("Password must contain at least one digit".to_string()));
+        }
+        Ok(())
+    }
+    
+    fn email_is_valid(input: &str) -> Result<(), ApplicationError> {
+        let re = Regex::new(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").unwrap();
+        if re.is_match(input) {
+            Ok(())
+        } else {
+            Err(ApplicationError::ApplicationError("Invalid email address".to_string()))
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn when_new_user_is_created_should_be_standard() {
+        let user = User::new("test@test.com", "James", "James!23").unwrap();
+        
+        if let User::Standard { user_details } = user {
+            assert_eq!(user_details.email_address, "test@test.com");
+            assert_eq!(user_details.name, "James");
+        } else {
+            panic!("Expected User::Standard variant");
+        }
     }
 }
