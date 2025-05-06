@@ -1,31 +1,47 @@
 mod core;
 mod data_access;
 
-use crate::core::{
-    ApplicationError, DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails,
-};
-use crate::data_access::PostgresUsers;
 use anyhow::Result;
+use crate::core::{ApplicationError, DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails};
+use crate::data_access::PostgresUsers;
 use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Json, Router};
 use std::sync::Arc;
-use tracing::info;
+use structured_logger::{async_json::new_writer, Builder};
+use opentelemetry::{trace::TracerProvider as _, KeyValue};
+use opentelemetry_sdk::{
+    trace::{RandomIdGenerator, Sampler, SdkTracerProvider},
+    Resource,
+};
+use opentelemetry_semantic_conventions::{
+    attribute::{DEPLOYMENT_ENVIRONMENT_NAME, SERVICE_NAME, SERVICE_VERSION},
+    SCHEMA_URL,
+};
+use tracing::Level;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use tracing_opentelemetry::{OpenTelemetryLayer};
 
 pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
-    pub data_access: TDataAccess,
+    pub data_access: TDataAccess
 }
 
 #[tokio::main]
 async fn main() -> Result<(), ApplicationError> {
-    tracing_subscriber::fmt().json().init();
+    let log_level = std::env::var("LOG_LEVEL").unwrap_or("INFO".to_string());
+    // Initialize the logger.
+    Builder::with_level(&log_level)
+        .with_target_writer("*", new_writer(tokio::io::stdout()))
+        .init();
 
+    let _otel_guard = init_tracing_subscriber();
+    
     let postgres_data_access = PostgresUsers::new().await?;
-
-    let shared_state = Arc::new(AppState {
-        data_access: postgres_data_access,
+    
+    let shared_state = Arc::new(AppState{
+        data_access: postgres_data_access
     });
-
+    
     // build our application with a route
     let app = Router::new()
         // `POST /users` goes to `register_user`
@@ -35,27 +51,24 @@ async fn main() -> Result<(), ApplicationError> {
         .with_state(shared_state);
 
     // run our app with hyper, listening globally on port 3000
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
-        .await
-        .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
-
-    tracing::info!("Starting application on port 3000");
-
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
+    
+    log::info!("listening on {}", listener.local_addr().unwrap());
+    
     axum::serve(listener, app.into_make_service())
         .await
         .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
-
+    
     Ok(())
 }
 
+#[tracing::instrument(skip(state, payload), fields(user.email_is_valid, user.password_is_valid))]
 async fn register_user<TDataAccess: DataAccess + Send + Sync>(
     State(state): State<Arc<AppState<TDataAccess>>>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<RegisterUserRequest>,
 ) -> (StatusCode, Json<Option<UserDetails>>) {
-    info!("Handling register user request");
-
     // insert your application logic here
     let user = User::new(&payload.email_address, &payload.name, &payload.password);
     match user {
@@ -64,82 +77,240 @@ async fn register_user<TDataAccess: DataAccess + Send + Sync>(
 
             match data_access {
                 Ok(_) => (StatusCode::CREATED, Json(Some(user.details().clone()))),
-                Err(e) => match e {
-                    ApplicationError::UserDoesNotExist => {
-                        tracing::error!("{}", e);
-                        (StatusCode::NOT_FOUND, Json(None))
+                Err(e) => {
+                    log::error!("{:?}", e);
+                    match e {
+                        ApplicationError::UserDoesNotExist => {
+                            (StatusCode::NOT_FOUND, Json(None))
+                        }
+                        _ => {
+                            (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
+                        }
                     }
-                    _ => {
-                        tracing::error!("{}", e);
-                        (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-                    }
-                },
-            }
-        }
-        Err(e) => match e {
-            ApplicationError::UserDoesNotExist => {
-                tracing::error!("{}", e);
-                (StatusCode::NOT_FOUND, Json(None))
-            }
-            _ => {
-                tracing::error!("{}", e);
-                (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
+                }
             }
         },
+        Err(e) => {
+            log::error!("{:?}", e);
+            match e {
+                ApplicationError::UserDoesNotExist => {
+                    (StatusCode::NOT_FOUND, Json(None))
+                },
+                _ => {
+                    (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
+                }
+            }
+        }
     }
 }
 
+#[tracing::instrument(skip(state, payload))]
 async fn login<TDataAccess: DataAccess + Send + Sync>(
     State(state): State<Arc<AppState<TDataAccess>>>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<LoginRequest>,
 ) -> (StatusCode, Json<Option<UserDetails>>) {
-    info!("Handling login request");
-    let user = state
-        .data_access
-        .with_email_address(&payload.email_address)
-        .await;
-
-    match user {
-        Ok(user) => match user.verify_password(&payload.password) {
-            Ok(_) => (StatusCode::OK, Json(Some(user.details().clone()))),
-            Err(_) => (StatusCode::UNAUTHORIZED, Json(None)),
-        },
-        Err(e) => match e {
-            ApplicationError::UserDoesNotExist => {
-                tracing::error!("{}", e);
-                (StatusCode::NOT_FOUND, Json(None))
-            }
-            _ => {
-                tracing::error!("{}", e);
-                (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
+    let user = state.data_access.with_email_address(&payload.email_address).await;
+    
+    match user { 
+        Ok(user) =>{
+            match user.verify_password(&payload.password) {
+                Ok(_) => (StatusCode::OK, Json(Some(user.details().clone()))),
+                Err(_) => (StatusCode::UNAUTHORIZED, Json(None)),
             }
         },
+        Err(e) => {
+            log::error!("{:?}", e);
+            match e { 
+                ApplicationError::UserDoesNotExist => {
+                    (StatusCode::NOT_FOUND, Json(None))
+                },
+                _ => {
+                    (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
+                }
+            } 
+        }
     }
 }
 
+#[tracing::instrument(skip(state, email_address))]
 async fn get_user_details<TDataAccess: DataAccess + Send + Sync>(
     State(state): State<Arc<AppState<TDataAccess>>>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Path(email_address): Path<String>,
 ) -> (StatusCode, Json<Option<UserDetails>>) {
-    info!("Handling get user details request");
-
     let user = state.data_access.with_email_address(&email_address).await;
 
     match user {
         Ok(user) => (StatusCode::OK, Json(Some(user.details().clone()))),
-        Err(e) => match e {
-            ApplicationError::UserDoesNotExist => {
-                tracing::error!("{}", e);
-                (StatusCode::NOT_FOUND, Json(None))
-            }
-            _ => {
-                tracing::error!("{}", e);
-                (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
+        Err(e) => {
+            log::error!("{:?}", e);
+            match e {
+                ApplicationError::UserDoesNotExist => {
+                    (StatusCode::NOT_FOUND, Json(None))
+                }
+                _ => {
+                    (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
+                }
             }
         },
+    }
+}
+
+struct OtelGuard {
+    tracer_provider: SdkTracerProvider,
+}
+
+impl Drop for OtelGuard {
+    fn drop(&mut self) {
+        if let Err(err) = self.tracer_provider.shutdown() {
+            eprintln!("{err:?}");
+        }
+    }
+}
+
+// Create a Resource that captures information about the entity for which telemetry is recorded.
+fn resource() -> Resource {
+    Resource::builder()
+        .with_schema_url(
+            [
+                KeyValue::new(SERVICE_NAME, "users-service"),
+                KeyValue::new(SERVICE_VERSION, "1.0.0"),
+                KeyValue::new(DEPLOYMENT_ENVIRONMENT_NAME, "develop"),
+            ],
+            SCHEMA_URL,
+        )
+        .build()
+}
+
+
+// Construct TracerProvider for OpenTelemetryLayer
+fn init_tracer_provider() -> SdkTracerProvider {
+    let exporter = opentelemetry_otlp::SpanExporter::builder()
+        .with_tonic()
+        .build()
+        .unwrap();
+
+    SdkTracerProvider::builder()
+        // Customize sampling strategy
+        .with_sampler(Sampler::ParentBased(Box::new(Sampler::TraceIdRatioBased(
+            1.0,
+        ))))
+        // If export trace to AWS X-Ray, you can use XrayIdGenerator
+        .with_id_generator(RandomIdGenerator::default())
+        .with_resource(resource())
+        .with_batch_exporter(exporter)
+        .build()
+}
+
+// Initialize tracing-subscriber and return OtelGuard for opentelemetry-related termination processing
+fn init_tracing_subscriber() -> OtelGuard {
+    let tracer_provider = init_tracer_provider();
+
+    let tracer = tracer_provider.tracer("users-service");
+
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::filter::LevelFilter::from_level(
+            Level::INFO,
+        ))
+        .with(OpenTelemetryLayer::new(tracer))
+        .init();
+
+    OtelGuard {
+        tracer_provider,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+    use super::*;
+    use crate::core::{ApplicationError, User};
+    use std::sync::Arc;
+    use mockall::mock;
+
+    // Create a mock implementation for testing
+    struct ManualMockDataAccess {
+        // You can store expected results or track calls
+        users: HashMap<String, User>,
+    }
+
+    impl ManualMockDataAccess {
+        pub fn new() -> Self {
+            Self {
+                users: HashMap::new(),
+            }
+        }
+    }
+    
+    mock! {
+        DataAccess{}
+        #[async_trait::async_trait]
+        impl DataAccess for DataAccess {
+            async fn with_email_address(&self, email_address: &str) -> std::result::Result<User, ApplicationError>;
+            async fn store(&self, user: User) -> std::result::Result<(), ApplicationError>;
+        }
+    }
+
+    #[async_trait::async_trait]
+    impl DataAccess for ManualMockDataAccess {
+        async fn with_email_address(&self, email_address: &str) -> std::result::Result<User, ApplicationError> {
+            if let Some(user) = self.users.get(email_address) {
+                Ok(user.clone())
+            } else {
+                Err(ApplicationError::UserDoesNotExist)
+            }
+        }
+
+        async fn store(&self, user: User) -> std::result::Result<(), ApplicationError> {
+            // Simulate storing the user
+            Ok(())
+        }
+    }
+
+    #[tokio::test]
+    async fn test_register_user_with_manual_mock() {
+        let mock_data_access = ManualMockDataAccess::new();
+        let shared_state = Arc::new(AppState {
+            data_access: mock_data_access
+        });
+
+        let (status, response) = register_user(
+            State(shared_state),
+            Json(RegisterUserRequest {
+                email_address: "test@test.com".to_string(),
+                name: "Test User".to_string(),
+                password: "Testing!23".to_string(),
+            }),
+        ).await;
+        
+        assert_eq!(status, StatusCode::CREATED);
+    }
+
+    #[tokio::test]
+    async fn test_register_user_with_mock_all() {
+        let mut mock_data_access = MockDataAccess::new();
+        mock_data_access
+            .expect_store()
+            .withf(|user| {
+                user.email_address() == "test@test.com".to_string()
+            })
+            .return_once(move |_| Ok(()));
+        let shared_state = Arc::new(AppState {
+            data_access: mock_data_access
+        });
+
+        let (status, response) = register_user(
+            State(shared_state),
+            Json(RegisterUserRequest {
+                email_address: "test@test.com".to_string(),
+                name: "Test User".to_string(),
+                password: "Testing!23".to_string(),
+            }),
+        ).await;
+
+        assert_eq!(status, StatusCode::CREATED);
     }
 }

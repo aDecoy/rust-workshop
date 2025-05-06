@@ -4,12 +4,7 @@ sidebar_position: 1
 
 # Intro
 
-- Introduce the `tracing` crate
-- Explain basic structured logging with tracing
-- `tracing::info` `tracing::warn` `tracing::error`
-- Introduce the `c` crate
-- Format in JSON
-- Format in STDOUT
-- Wrap Axum in logs
-- Explain the state of OpenTelemetry in Rust
+Observability is a fundamental part of modern application development. Being able to ask questions of your system, from a place that is external to your system, ensures that you can always understand exactly what you're system is doing.
+
+But how should you think about observability in Rust? You'll find out in this module.
 

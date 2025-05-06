@@ -8,12 +8,15 @@ pub struct PostgresUsers {
 
 impl PostgresUsers {
     pub async fn new() -> Result<Self, ApplicationError> {
+        log::info!("Setting up database connection");
+        
         let db_url = &env::var("DATABASE_URL")
             .map_err(|e| ApplicationError::DatabaseError(e.to_string()))?;
 
         let database_pool = PgPool::connect(db_url)
             .await
             .map_err(|e| ApplicationError::DatabaseError(e.to_string()))?;
+
 
         Ok(Self {
             db: database_pool,
@@ -24,6 +27,8 @@ impl PostgresUsers {
 #[async_trait::async_trait]
 impl DataAccess for PostgresUsers {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError> {
+        log::info!("Attempting to retrieve user from email address");
+        
         let email = sqlx::query!(
             r#"
             SELECT email_address, name, password
@@ -49,6 +54,8 @@ impl DataAccess for PostgresUsers {
     }
 
     async fn store(&self, user: User) -> Result<(), ApplicationError> {
+        log::info!("Attempting to create user in the database");
+        
         let _rec = sqlx::query!(
             r#"
     INSERT INTO users ( email_address, name, password )
