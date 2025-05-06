@@ -1,12 +1,12 @@
 ---
-sidebar_position: 2
+sidebar_position: 5
 ---
 
 # Challenge
 
 Now it's time to put what you've learned into practice! In this module's challenge, you'll:
 
-1. Add the serde and serde_json dependencies to your project's Cargo.toml file
+1. Add the `serde` and `serde_json` dependencies to your project's Cargo.toml file
 2. Apply the `Serialize` and `Deserialize` derive macros to your User and UserDetails types
 3. Modify your main function to:
    - Create a user and serialize it to JSON
