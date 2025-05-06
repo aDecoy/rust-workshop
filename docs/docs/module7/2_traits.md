@@ -6,9 +6,18 @@ sidebar_position: 2
 
 In Rust, traits define shared behavior that types can implement. They're similar to interfaces in C#, but with some important differences.
 
-### What is a Trait?
+## What is a Trait?
 
-A trait is a collection of methods that a type must implement to satisfy the trait. For example:
+A trait is a collection of methods that a type must implement to satisfy the trait. For example a `DataAccess` interface in .NET might be defined as:
+
+```csharp showLineNumbers
+public interface IDataAccess {
+    public Task Store(User user);
+    public Task<User> WithEmailAddress(string emailAddress);
+}
+```
+
+To implement a similar thing in Rust using traits, it would look like:
 
 ```rust showLineNumbers
 pub trait DataAccess {
@@ -19,11 +28,16 @@ pub trait DataAccess {
 
 This trait defines two methods that any implementing type must provide. Like an interface in .NET, it specifies a contract without implementation details.
 
-### Implementing Traits
+## Implementing Traits
 
-To implement a trait, you use the `impl Trait for Type` syntax:
+As you learned in an earlier module, implementations for a given struct are defined in a seperate `impl {}` block. To implement a trait, you use the `impl Trait for Type` syntax:
 
 ```rust showLineNumbers
+impl DataAccess {
+    // Implementations specific to the DataAccess trait
+}
+
+// Implementations for the `InMemoryDataAccess` trait
 impl DataAccess for InMemoryDataAccess {
     fn with_email_address(&self, email_address: &str) -> Option<User> {
         self.users.lock().unwrap().iter()
@@ -37,16 +51,16 @@ impl DataAccess for InMemoryDataAccess {
 }
 ```
 
-This is similar to implementing an interface in C#, but note that the implementation can be separate from the type definition.
+This is similar to implementing an interface in C#, but note that the implementation are separate from the type definition.
 
-### Traits vs. Interfaces: Key Differences
+## Traits vs. Interfaces: Key Differences
 
 1. **Orphan Rule**: In Rust, you can only implement a trait for a type if either the trait or the type is defined in your crate
 2. **Default Implementations**: Traits can provide default implementations for methods
 3. **Coherence**: A type can only have one implementation of a trait
 4. **Static Dispatch**: Rust typically resolves trait methods at compile time (zero cost)
 
-### Async Traits
+## Async Traits
 
 When working with async functions in traits, you'll encounter a limitation: Rust doesn't directly support async functions in traits yet. This is where the `async_trait` crate comes in:
 
