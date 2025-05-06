@@ -62,7 +62,7 @@ This is similar to implementing an interface in C#, but note that the implementa
 
 ## Async Traits
 
-When working with async functions in traits, you'll encounter a limitation: Rust doesn't directly support async functions in traits yet. This is where the `async_trait` crate comes in:
+When working with async functions in traits, you'll encounter a limitation: Rust doesn't *(currently, but it's in [progress](https://rust-lang.github.io/rust-project-goals/2025h1/async.html))* directly support async functions in traits yet. This is where the `async_trait` crate comes in:
 
 ```rust showLineNumbers
 use async_trait::async_trait;

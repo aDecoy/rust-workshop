@@ -26,7 +26,7 @@ Declartive macros are useful when you find yourself writing the same code over a
 
 Procedural macros are more akin to a combination of parser and code generation, where you write the glue code in between. You define **how** to generate code given a set of input tokens, rather than writing the exact code that gets generated.
 
-Procedural macros act more like functions (they take code as input, manipulate it, and produce code as output). There are three different types of procedural macros:
+Procedural macros act more like functions (they take syntax as input, manipulate it, and produce code as output). You can even introduce completely new syntax if you wish, the sky's the limit. There's even a crate for adding [inline Python in Rust](https://docs.rs/inline-python/latest/inline_python/). There are three different types of procedural macros:
 
 - Function like macros
 - Attribute macros, like `#[test]` 
@@ -34,7 +34,7 @@ Procedural macros act more like functions (they take code as input, manipulate i
 
 It's worth pointing out that procedural macros can significantly increase compile time, as they typically bring in some pretty large dependencies and you could end up generating a lot of code without actually realising it. The boilerplate adds  up, and therefore starts to add to your compile time.
 
-For the reminader of this module, you'll focused on `derive` macros as these are what `serde` uses to implement serialization and deserialization.
+For the remainder of this module, you'll focused on `derive` macros as these are what `serde` uses to implement serialization and deserialization.
 
 ### Derive Macros
 
@@ -42,7 +42,7 @@ Derive macros allow you to automate the implementation of a trait, where auto-im
 
 Take the `Debug` macros, if you added the `Debug` macro to a struct what would you expect it to do? Print every property of the struct and it's value? Yeah that'd probablly be pretty useful. What about deriving `Serialize`, well yeah you would expect that to serialize your struct into a JSON string.
 
-You don't need to understand in detail how macros work, I'd highly recommend picking up **Rust for Rustaceans, by Jon Gjengset** if you want to dive deeper. And a special shoutout to Jon as much of the content in this page is taken from the easy to follow explanations in the book. This [Youtube video](https://www.youtube.com/watch?v=Zmoy65pcHlk) is also helpful to see exactly what is happening under the hood.
+You don't need to understand in detail how macros work but I'd highly recommend picking up **Rust for Rustaceans, by Jon Gjengset** if you want to dive deeper. And a special shoutout to Jon as much of the content in this page is taken from the easy to follow explanations in the book. This [Youtube video](https://www.youtube.com/watch?v=Zmoy65pcHlk) is also helpful to see exactly what is happening under the hood.
 
 Serde's derive macros automatically implement the `Serialize` and `Deserialize` traits for your types, saving you from writing boilerplate code.
 

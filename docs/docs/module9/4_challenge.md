@@ -20,7 +20,7 @@ Now it's time to apply what you've learned about testing in Rust! In this module
    - Create a new directory and for running integration tests `mkdir integration-tests && cd integration-tests && cargo init`
    - Test successful registration and login
 
-::: info
+:::info
 
 You'll need a couple of additional crates for writing integration tests. The dependencies in your `Cargo.toml` should be:
 

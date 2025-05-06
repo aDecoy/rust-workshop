@@ -8,7 +8,7 @@ Now it's time to apply what you've learned about observability in Rust! In this 
 1. Add the `log` and `structured-logger` crates and implement structured logging:
 2. Add the `tracing`, `tracing-subscriber`, `opentelemetry`, `opentelemetry_sdk`, `opentelemetry-semantic-conventions` and `opentelemetry-otlp` crates and implement distributed tracing
 
-::: info
+:::info
 
 The final dependencies in your `Cargo.toml` should be:
 
