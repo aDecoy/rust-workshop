@@ -1,27 +1,8 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
-# Mutability
-
-:::important
-
-Every variable in Rust is immutable by default.
-
-:::
-
-To see this in action, go and run the `module3` code:
-
-```sh
-cd src/examples/module3/rust_app
-cargo run
-```
-
-And oops! There's a problem:
-
-**error[E0384]: cannot assign twice to immutable variable `integer_example`**
-
-See if you can go and fix it. Go on, try on your own.
+# Mutability Part 2
 
 If you delete the line assigning the `integer_example` then congrats 🎉 You're a Rust developer now.
 

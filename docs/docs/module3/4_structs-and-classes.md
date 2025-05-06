@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Structs and Classes
@@ -21,11 +21,10 @@ struct User {
 
 ## The `impl` block
 
+A key difference is that the methods/functions of your struct are separate from the actual definition.
+
 ```rust showLineNumbers
-// A key difference is that the methods/functions of your struct
-// Are separate from the actual definition. Inside this `impl` block
 impl User {
-    // no 'self' at all defines a static method. Called using User::new()
     fn new(email_address: &str, name: &str) -> User {
         let new_user = User {
             email_address: email_address.to_string(), name: name.to_string(), age: None
@@ -34,17 +33,12 @@ impl User {
         new_user
     }
     
-    // &mut self is used because you want to mutate the data in this instance of the struct
     fn update_email_address(&mut self, email_address: &str) {
     }
 
-    // &self is used because you want to reference the data of this instance, not take ownership of it. Read but not write
     fn say_hello(&self) {
     }
 
-    // Using 'self' is a rare case where you want to take ownership of the original instance and use something new
-    // calling this function will prevent the original instance from being used, as this function
-    // takes ownership and then drop the original instance
     fn update_to_premium(self) -> PremiumUser {
     }
 }
@@ -70,6 +64,12 @@ fn new(email_address: &str, name: &str) -> User {
 
 }
 ```
+
+:::info
+
+The `new()` function is the conventional way for initializating a new struct in Rust. Whilst not built into the language like constructors in .NET, it's an idiomatic way of creating new instances of things.
+
+:::
 
 ### `&self`
 

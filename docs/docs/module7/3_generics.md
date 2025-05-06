@@ -8,7 +8,7 @@ Generics in Rust serve a similar purpose to generics in C#: they allow you to wr
 
 ## Monomorphization
 
-For this to work, Rust needs a way to figure out the concrete types of all the generics before the code can execute. Different languages handle this problem differently. Rust takes a different approach: it monomorphizes all generic types. This means that compiler stamps out a different copy of the code of a generic function for each concrete type needed. For example, if I use a Vec<u64> and a Vec<String> in my code, then the generated binary will have two copies of the generated code for Vec: one for Vec<u64> and another for Vec<String>. The result is fast programs, but it comes at the cost of compile time (creating all those copies can take a while) and binary size (all those copies might take a lot of space).
+For this to work, Rust needs a way to figure out the concrete types of all the generics before the code can execute. Different languages handle this problem differently. Rust takes a different approach: it monomorphizes all generic types. This means that compiler stamps out a different copy of the code of a generic function for each concrete type needed. For example, if I use a `Vec<u64>` and a `Vec<String>` in my code, then the generated binary will have two copies of the generated code for Vec: one for `Vec<u64>` and another for `Vec<String>`. The result is fast programs, but it comes at the cost of compile time (creating all those copies can take a while) and binary size (all those copies might take a lot of space).
 
 ## Basic Generic Types
 
