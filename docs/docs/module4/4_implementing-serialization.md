@@ -6,6 +6,13 @@ sidebar_position: 4
 
 To make your types serializable, you add the `Serialize` and `Deserialize` derive macros:
 
+:::important
+
+The types of any properties in your struct **MUST** also implement serialize and deserialize, otherwise you'll get a compiler error. You can exclude properties by adding the `#[serde(skip_serializing)]` macro to the property in question.
+
+:::
+
+
 ```rust showLineNumbers
 use serde::{Serialize, Deserialize};
 

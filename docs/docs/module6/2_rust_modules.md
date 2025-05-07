@@ -35,8 +35,12 @@ When you declare a `mod core` the compiler is going to look for a file called `c
 
 Rust has a powerful system of access modifiers. Think of these in a similar way to how you might think of encapsulation  in .NET (public, private, internal etc).
 
-- `pub`: Public, visible everywhere
+:::important
+Everything is private to the current file as a default in Rust
+:::
+
 - No modifier: Private to the current module
+- `pub`: Public, visible everywhere
 - `pub(crate)`: Visible only within the current crate
 - `pub(super)`: Visible to the parent module
 - `pub(in path)`: Visible to a specific path

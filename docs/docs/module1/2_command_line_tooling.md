@@ -52,6 +52,32 @@ One of the trade-offs with Rust is extended compilation times. To get the perfor
 
 :::
 
+### Cross-Compilation
+
+Rust does support cross compilation, in the same way you might run `dotnet publish -c Release -r linux-x64` in .NET. There are two parts to cross compilation, the *host* and the *target*. The *host* platform is the one doing the compiling, and the *target* is what you are building for. 
+
+The target platform is specified as a `triplet`, which follows the structure *machine-vendor-os*. The *machine* part could be `x86_64`, `aarch64` or even `wasm32`. The *vendor* part is going to be one of `pc` (Windows), `apple` (MacOS) and `unknown` for everything else. And then the *os* part tells the compiler what format to use for the final binary output, using a value of `linux` will give you *.so* files, `windows` will give you *.dll*.
+
+To tell Rust to cross-compile, you pass the required target to the `--target` flag.
+
+```sh
+cargo build --target aarch64-unknown-linux
+```
+
+Before you can actually compile your application though, you'll need to add the toolchain for the required target.
+
+```sh
+rustup target add aarch64-unknown-linux
+```
+
+:::info
+
+`Rustup` is a command-line tool that serves as the official installer and version management system for the Rust programming language.
+
+:::
+
+## Check your application
+
 Rust also has a command to check your application, rather than compiling you can validate that your code is correct.
 
 ```sh
