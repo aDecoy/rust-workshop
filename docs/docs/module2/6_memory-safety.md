@@ -40,11 +40,11 @@ This approach provides:
 
 ## Analyzing the Memory Safety Examples
 
-You'll first look at specific examples from the codebase that demonstrate these differences. You can find them in [GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module2/1-memory-safety).
+You'll first look at specific examples from the codebase that demonstrate these differences. You can find them in [GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/demos/1--memory-safety).
 
 ### .NET Example
 
-[.NET Sample Link](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/blob/main/src/solutions/module2/1-memory-safety/DotnetMemorySafety/Program.cs)
+[.NET Sample Link](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/blob/main/src/demos/1--memory-safety/DotnetMemorySafety/Program.cs)
 
 ```csharp showLineNumbers
 var user = new User(){
@@ -80,7 +80,7 @@ This C# code creates a `User` object and then attempts to update its name from t
 
 ### Rust Example
 
-[Rust Link](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/blob/main/src/solutions/module2/1-memory-safety/rust_app/src/main.rs)
+[Rust Link](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/blob/main/src/demos/1--memory-safety/rust_app/src/main.rs)
 
 ```rust showLineNumbers
 #[tokio::main]
@@ -111,7 +111,7 @@ async fn main() {
 The Rust example attempts something similar but with a crucial difference: it **will not compile**. You can try if you want:
 
 ```sh
-cd src/examples/module2/1-memory-safety/rust_app
+cd src/demos/1-memory-safety/rust_app
 cargo run
 ```
 
