@@ -2,22 +2,6 @@
 sidebar_position: 3
 ---
 
-# Mutability Part 2
-
-If you delete the line assigning the `integer_example` then congrats 🎉 You're a Rust developer now.
-
-So how would you go about declaring a variable that you could change? That's easy, introducing the `mut` keyword.
-
-:::important
-The `mut` keywords explicitally declares a variable as something you want to mutate later. If you declare a variable as mutable but never actually change it, the compiler will give you a warning and recommend you remove the `mut` keyword. Neat!
-:::
-
-```rust showLineNumbers
-let mut str_example = "This string is now mutable";
-str_example = "And can be edited";
-println!("{}", str_example);
-```
-
 ## Shadowing
 
 When you're working with Rust, you'll often encounter a concept called shadowing. Here's how it works:

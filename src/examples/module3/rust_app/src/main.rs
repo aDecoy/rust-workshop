@@ -31,8 +31,6 @@ async fn main() {
     let bool_example: bool = true;
     println!("{}", bool_example);
 
-    integer_example = 99;
-
     // Everything is immutable by default in Rust
     let mut mutable_string = "Hello";
     mutable_string = "Hello World";
