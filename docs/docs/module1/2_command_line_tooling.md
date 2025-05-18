@@ -83,3 +83,22 @@ Rust also has a command to check your application, rather than compiling you can
 ```sh
 cargo check
 ```
+
+## Extending Cargo
+
+Much like [.NET tools](https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools) in the .NET CLI, which allow you to extend the functionality of the `dotnet` command. Cargo also supports similar functionality.
+
+One of the most useful is `cargo watch`, which will sit and watch your file system for changes and automatically re-run `cargo check` whenever your code changes.
+
+```sh
+cargo install cargo-watch
+cargo watch
+```
+
+`cargo watch` also supports chaining, which means you can write things like:
+
+```sh
+cargo watch -x check -x test
+```
+
+Which will first run `cargo check`, if it completes successfully it will then automatically run `cargo test`.
