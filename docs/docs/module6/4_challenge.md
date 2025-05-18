@@ -7,9 +7,9 @@ sidebar_position: 4
 Now it's time to apply what you've learned about modular architecture! In this module's challenge, you'll:
 
 1. Take the monolithic web API from the previous module and split it into a modular architecture
-2. Create separate files for:
-   - `core.rs`: Containing your domain models and business logic
-   - `data_access.rs`: Containing your data storage mechanism
+2. Create separate modules for:
+   - `core`: Containing your domain models and business logic, this should use the folder (`core`) method for defining a module
+   - `data_access.rs`: Containing your data storage mechanism, this should use the single file method for defining a module
    - `main.rs`: For your API endpoints and application setup
 3. Apply appropriate visibility modifiers to enforce architectural boundaries
 4. Ensure all modules are properly connected and the API still works as expected

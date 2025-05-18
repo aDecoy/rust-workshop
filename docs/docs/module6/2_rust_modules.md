@@ -28,7 +28,7 @@ mod core; // Tells Rust to look for core.rs or core/mod.rs
 The second approach is more common for larger applications and is what you'll use in this module.
 
 :::info
-When you declare a `mod core` the compiler is going to look for a file called `core.rs` **OR** `core/mod.rs`
+When you declare a `mod core` the compiler is going to look for a file called `core.rs` **OR** `core/mod.rs`. If you have a relatively simple module, using a single file is great. As the code in your module starts to grow though, it might be more beneficial to move that to a folder then split the single file down into independent files
 :::
 
 ### Module Visibility
@@ -40,6 +40,7 @@ Everything is private to the current file as a default in Rust
 :::
 
 - No modifier: Private to the current module
+- `no identifier`: Private within the current file
 - `pub`: Public, visible everywhere
 - `pub(crate)`: Visible only within the current crate
 - `pub(super)`: Visible to the parent module
