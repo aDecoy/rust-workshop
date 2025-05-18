@@ -8,6 +8,7 @@ use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Json, Router};
 use std::sync::Arc;
+use core::Config;
 
 pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
     pub data_access: TDataAccess
@@ -15,7 +16,9 @@ pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
 
 #[tokio::main]
 async fn main() -> Result<(), ApplicationError> {
-    let postgres_data_access = PostgresUsers::new().await?;
+    let config = Config::get_configuration()?;
+
+    let postgres_data_access = PostgresUsers::new(config.connection_string()).await?;
     
     let shared_state = Arc::new(AppState{
         data_access: postgres_data_access
@@ -30,7 +33,11 @@ async fn main() -> Result<(), ApplicationError> {
         .with_state(shared_state);
 
     // run our app with hyper, listening globally on port 3000
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
+    println!("Listening on port {}", config.app_port());
+
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", config.app_port()))
+        .await
+        .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
     
     axum::serve(listener, app.into_make_service())
         .await

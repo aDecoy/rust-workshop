@@ -1,4 +1,3 @@
-use std::env;
 use sqlx::PgPool;
 use crate::core::{ApplicationError, DataAccess, User};
 
@@ -7,16 +6,12 @@ pub struct PostgresUsers {
 }
 
 impl PostgresUsers {
-    pub async fn new() -> Result<Self, ApplicationError> {
-        log::info!("Setting up database connection");
+    pub async fn new(connection_string: String) -> Result<Self, ApplicationError> {
+        log::info!("Attempting to connect to the database");
         
-        let db_url = &env::var("DATABASE_URL")
-            .map_err(|e| ApplicationError::DatabaseError(e.to_string()))?;
-
-        let database_pool = PgPool::connect(db_url)
+        let database_pool = PgPool::connect(&connection_string)
             .await
             .map_err(|e| ApplicationError::DatabaseError(e.to_string()))?;
-
 
         Ok(Self {
             db: database_pool,

@@ -21,6 +21,7 @@ use opentelemetry_semantic_conventions::{
 use tracing::Level;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use tracing_opentelemetry::{OpenTelemetryLayer};
+use core::Config;
 
 pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
     pub data_access: TDataAccess
@@ -28,6 +29,8 @@ pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
 
 #[tokio::main]
 async fn main() -> Result<(), ApplicationError> {
+    let config = Config::get_configuration()?;
+
     let log_level = std::env::var("LOG_LEVEL").unwrap_or("INFO".to_string());
     // Initialize the logger.
     Builder::with_level(&log_level)
@@ -35,8 +38,8 @@ async fn main() -> Result<(), ApplicationError> {
         .init();
 
     let _otel_guard = init_tracing_subscriber();
-    
-    let postgres_data_access = PostgresUsers::new().await?;
+
+    let postgres_data_access = PostgresUsers::new(config.connection_string()).await?;
     
     let shared_state = Arc::new(AppState{
         data_access: postgres_data_access
@@ -51,7 +54,11 @@ async fn main() -> Result<(), ApplicationError> {
         .with_state(shared_state);
 
     // run our app with hyper, listening globally on port 3000
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
+    println!("Listening on port {}", config.app_port());
+
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", config.app_port()))
+        .await
+        .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
     
     log::info!("listening on {}", listener.local_addr().unwrap());
     

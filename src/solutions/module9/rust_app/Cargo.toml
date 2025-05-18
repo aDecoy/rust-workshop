@@ -14,5 +14,6 @@ sqlx = {version = "0.8.3", features = ["postgres", "runtime-tokio"]}
 argon2 = "0.5.3"
 regex = "1.11.1"
 mockall = {version = "0.13.1"}
+figment = {version="0.10.19", features = ["json", "env"]}
 
 [dev-dependencies]

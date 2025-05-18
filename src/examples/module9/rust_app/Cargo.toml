@@ -11,8 +11,8 @@ serde = { version = "1.0.218", features = ["derive"] }
 thiserror = "2"
 tokio = { version = "1", features = ["full"] }
 argon2 = "0.5.3"
-regex = "1.11.1"
 
 sqlx = {version = "0.8.3", features = ["postgres", "runtime-tokio"]}
+figment = {version="0.10.19", features = ["json", "env"]}
 
 [dev-dependencies]
