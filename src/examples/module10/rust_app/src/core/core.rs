@@ -205,7 +205,7 @@ impl User {
         if !password.chars().any(|c| c.is_lowercase()) {
             return Err(ApplicationError::ApplicationError("Password must contain at least one lowercase letter".to_string()));
         }
-        if !password.chars().any(|c| c.is_digit(10)) {
+        if !password.chars().any(|c| c.is_ascii_digit()) {
             return Err(ApplicationError::ApplicationError("Password must contain at least one digit".to_string()));
         }
         Ok(())

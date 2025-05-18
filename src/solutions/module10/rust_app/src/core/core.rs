@@ -212,7 +212,7 @@ impl User {
             tracing::Span::current().record("user.password_is_valid", "false");
             return Err(ApplicationError::ApplicationError("Password must contain at least one lowercase letter".to_string()));
         }
-        if !password.chars().any(|c| c.is_digit(10)) {
+        if !password.chars().any(|c| c.is_ascii_digit()) {
             tracing::Span::current().record("user.password_is_valid", "false");
             return Err(ApplicationError::ApplicationError("Password must contain at least one digit".to_string()));
         }
