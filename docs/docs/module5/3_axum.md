@@ -88,3 +88,42 @@ async fn register_user(
 The function signature reveals several important concepts:
 - `Json(payload)`: An extractor that parses the request body as JSON
 - `(StatusCode, Json<UserDetails>)`: A tuple return type that combines a status code and JSON response
+
+## Extractors
+
+A handler function in an API is an async function that takes any number of `extractors` as arguments. You can think of extractors simply as a something that extracts *something* from the inbound request. For example, the `Json` extractor consumes the request body and deserilies it into a target type.
+
+[Common extractors, taken from the Axum documentation](https://docs.rs/axum/latest/axum/extract/index.html), are:
+
+```rust, showLineNumbers
+
+// `Path` gives you the path parameters and deserializes them. See its docs for
+// more details
+async fn path(Path(user_id): Path<u32>) {}
+
+// `Query` gives you the query parameters and deserializes them.
+async fn query(Query(params): Query<HashMap<String, String>>) {}
+
+// `HeaderMap` gives you all the headers
+async fn headers(headers: HeaderMap) {}
+
+// `String` consumes the request body and ensures it is valid utf-8
+async fn string(body: String) {}
+
+// `Bytes` gives you the raw request body
+async fn bytes(body: Bytes) {}
+
+// We've already seen `Json` for parsing the request body as json
+async fn json(Json(payload): Json<Value>) {}
+
+// Parse the body using `application/x-www-form-urlencoded`
+async fn accept_form(Form(sign_up): Form<SignUp>) {}
+
+// `Request` gives you the whole request for maximum control
+async fn request(request: Request) {}
+
+```
+
+Be aware, the [order the extractors](https://docs.rs/axum/latest/axum/extract/index.html#the-order-of-extractors) run in might be important. 
+
+Extractors are a powerful part of the Axum ecosystem and it's worth taking some time to explore the Axum documentation in more detail.

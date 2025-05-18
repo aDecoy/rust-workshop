@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-## Shadowing
+# Shadowing
 
 When you're working with Rust, you'll often encounter a concept called shadowing. Here's how it works:
 

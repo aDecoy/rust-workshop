@@ -7,7 +7,7 @@ sidebar_position: 5
 Now it's time for you to take your first steps with Rust! Here's a challenge to get you started:
 
 1. Initialize a Rust application in a brand new directory
-   - If you have cloned the [GitHub repository](github.com/jeastham1993/rust-for-dotnet-devs-workshop) there is a folder called `scratch` which contains ` devcontainers.json` file. You can use this to launch a devcontainer for Rust development, as well as working through all the examples and challenges.
+   - If you have cloned the [GitHub repository](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop) there is a folder called `scratch` which contains ` devcontainers.json` file. You can use this to launch a devcontainer for Rust development, as well as working through all the examples and challenges.
 2. Open the `src/main.rs` file in your editor and modify the "Hello, world!" message to include your name.
 3. Run the application to see your changes
 4. Try adding a second line to the program that prints the current date and time.

@@ -6,7 +6,7 @@ sidebar_position: 3
 
 ## Dependency Injection and Shared State
 
-.NET has a built-in dependency injection system, but Rust takes a different approach. In Axum, you'll typically manage shared state using `Extension`:
+.NET has a built-in dependency injection system, but Rust takes a different approach. In Axum, you'll typically manage shared state using [`Extension`](https://docs.rs/axum/latest/axum/struct.Extension.html):
 
 ```rust showLineNumbers
 // Define your application state
@@ -65,6 +65,15 @@ thread::spawn(move || {
     // Use worker_data in the new thread
 });
 ```
+
+:::info
+
+The `.clone()` function takes a complete clone of the value in memory. `let value = x.clone()` will make a copy of the variable `x`, that the variable `value` then owns.
+
+Integers, bools and chars are `Copy` types, assignment or passing them around just copies the value, not the ownership. Same behaviour, you just don't need to be explicit about it like you would with `String`, `Vec`, or other complex types.
+
+:::
+
 
 ### RwLock (Read-Write Lock)
 
