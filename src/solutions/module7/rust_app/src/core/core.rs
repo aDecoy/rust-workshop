@@ -20,7 +20,7 @@ pub struct LoginRequest {
     pub password: String,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct UserDetails {
     email_address: String,
@@ -38,6 +38,81 @@ pub enum User {
         user_details: UserDetails,
         is_premium: bool,
     },
+}
+
+#[derive(Serialize)]
+pub struct UserDto {
+    email_address: String,
+    name: String,
+    age: Option<i32>,
+    is_premium: bool,
+}
+
+impl From<User> for UserDto {
+    fn from(user: User) -> Self {
+        match user {
+            User::Standard { user_details } => UserDto {
+                email_address: user_details.email_address.clone(),
+                name: user_details.name.clone(),
+                age: user_details.age,
+                is_premium: false,
+            },
+            User::Premium {
+                user_details,
+                is_premium: _,
+            } => UserDto {
+                email_address: user_details.email_address.clone(),
+                name: user_details.name.clone(),
+                age: user_details.age,
+                is_premium: true,
+            },
+        }
+    }
+}
+
+
+impl Default for User {
+    fn default() -> Self {
+        User::Standard {
+            user_details: UserDetails::default(),
+        }
+    }
+}
+
+impl std::fmt::Display for User {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            User::Standard { user_details } => write!(f, "Standard User: {}", user_details.email_address),
+            User::Premium {
+                user_details,
+                is_premium: _,
+            } => write!(f, "Premium User: {}", user_details.email_address),
+        }
+    }
+}
+
+impl PartialEq for User {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (
+                User::Standard { user_details },
+                User::Standard {
+                    user_details: other_user_details,
+                },
+            ) => user_details.email_address == other_user_details.email_address,
+            (
+                User::Premium {
+                    user_details,
+                    is_premium: _,
+                },
+                User::Premium {
+                    user_details: other_user_details,
+                    is_premium: other_is_premium,
+                },
+            ) => user_details.email_address == other_user_details.email_address,
+            _ => false,
+        }
+    }
 }
 
 impl User {
@@ -98,52 +173,6 @@ impl User {
         };
 
         user_details.age = Some(new_age);
-    }
-
-    // &self is used because you want to reference the data of this instance, not take ownership of it. Read but not write
-    fn say_hello(&self) {
-        let name = match &self {
-            User::Standard { user_details } => user_details.name.as_str(),
-            User::Premium {
-                user_details,
-                is_premium: _,
-            } => user_details.name.as_str(),
-        };
-
-        // String interpolation
-        println!("Hello! I'm {}. I'm a standard user.", name);
-    }
-
-    // The option type is an alternative to NULL values. It's an enum that has type Some(T) or None
-    fn get_age(&self) -> Option<i32> {
-        let age = match &self {
-            User::Standard { user_details } => user_details.age,
-            User::Premium {
-                user_details,
-                is_premium: _,
-            } => user_details.age,
-        };
-
-        age
-    }
-
-    // The option type is an alternative to NULL values. It's an enum that has type Some(T) or None
-    fn whats_my_age(&self) {
-        // Everything in Rust returns a value, so you can assign a variable to the result of a match
-        let users_age = match &self {
-            User::Standard { user_details } => user_details.age,
-            User::Premium {
-                user_details,
-                is_premium: _,
-            } => user_details.age,
-        };
-
-        // If let allows you to assign a variable and have an if condition in a single line
-        if let Some(age) = users_age {
-            println!("I'm {} years old.", age);
-        } else {
-            println!("I don't know my age.");
-        }
     }
 
     // Using just 'self' is a rare case where you want to take ownership of the original instance and use something new

@@ -1,12 +1,12 @@
 mod core;
 mod data_access;
 
-use std::sync::{Arc, Mutex};
+use core::UserDto;
+use std::sync::Arc;
 use crate::core::{DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails};
 use axum::extract::{Path, State};
-use axum::handler::HandlerWithoutStateExt;
 use axum::routing::get;
-use axum::{http::StatusCode, routing::post, Extension, Json, Router};
+use axum::{http::StatusCode, routing::post, Json, Router};
 use crate::data_access::InMemoryDataAccess;
 
 // Wrap all of our shared state/dependencies in a single struct
@@ -49,6 +49,9 @@ async fn register_user<TDataAccess: DataAccess + Send + Sync>(
     Json(payload): Json<RegisterUserRequest>,
 ) -> (StatusCode, Json<UserDetails>) {
     let user = User::new(&payload.email_address, &payload.name, &payload.password);
+
+    let existing_user = state.data_access.with_email_address(&user.email_address());
+
     state.data_access.store(user.clone());
     
     (StatusCode::CREATED, Json(user.details().clone()))
@@ -77,11 +80,11 @@ async fn get_user_details<TDataAccess: DataAccess + Send + Sync>(
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Path(email_address): Path<String>,
-) -> (StatusCode, Json<Option<UserDetails>>) {
+) -> (StatusCode, Json<Option<UserDto>>) {
     let user = state.data_access.with_email_address(&email_address);
 
     match user {
-        Some(user) => (StatusCode::OK, Json(Some(user.details().clone()))),
+        Some(user) => (StatusCode::OK, Json(Some(user.into()))),
         None => (StatusCode::NOT_FOUND, Json(None)),
     }
 }
