@@ -1,0 +1,5 @@
+{
+  "database": {
+    "connection_string": "postgresql://postgres:mysupersecretlocalpassword@localhost:5432/users"
+  }
+}
