@@ -18,3 +18,8 @@ version = "1.16.0"
 features = [
     "v4",
 ]
+
+[dependencies.rdkafka]
+version     = "0.37.0"
+default-features = false
+features    = ["tokio", "ssl"]

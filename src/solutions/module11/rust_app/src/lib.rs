@@ -3,14 +3,14 @@ mod data_access;
 
 pub use crate::core::ApplicationError;
 
-use anyhow::Result;
 use crate::core::{DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails};
 use crate::data_access::PostgresUsers;
+use anyhow::Result;
 use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Json, Router};
-use std::sync::Arc;
-use structured_logger::{async_json::new_writer, Builder};
+use core::Config;
+use log::info;
 use opentelemetry::{trace::TracerProvider as _, KeyValue};
 use opentelemetry_sdk::{
     trace::{RandomIdGenerator, Sampler, SdkTracerProvider},
@@ -20,32 +20,84 @@ use opentelemetry_semantic_conventions::{
     attribute::{DEPLOYMENT_ENVIRONMENT_NAME, SERVICE_NAME, SERVICE_VERSION},
     SCHEMA_URL,
 };
+use rdkafka::client::ClientContext;
+use rdkafka::config::{ClientConfig, RDKafkaLogLevel};
+use rdkafka::consumer::stream_consumer::StreamConsumer;
+use rdkafka::consumer::{Consumer, ConsumerContext};
+use rdkafka::Message;
+use std::sync::Arc;
+use structured_logger::{async_json::new_writer, Builder};
 use tracing::Level;
+use tracing_opentelemetry::OpenTelemetryLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use tracing_opentelemetry::{OpenTelemetryLayer};
-use core::Config;
+
+pub struct CustomContext;
+
+impl ClientContext for CustomContext {}
+
+impl ConsumerContext for CustomContext {}
+
+type LoggingConsumer = StreamConsumer<CustomContext>;
 
 pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
-    pub data_access: TDataAccess
+    pub data_access: TDataAccess,
 }
 
-pub async fn start() -> Result<(), ApplicationError> {
-    let config = Config::get_configuration()?;
-
+pub fn init_logger() {
     let log_level = std::env::var("LOG_LEVEL").unwrap_or("INFO".to_string());
+
     // Initialize the logger.
     Builder::with_level(&log_level)
         .with_target_writer("*", new_writer(tokio::io::stdout()))
-        .init();
+        .init()
+}
 
-    let _otel_guard = init_tracing_subscriber();
+pub async fn start_background_worker() -> Result<(), ApplicationError> {
+    let config = Config::get_configuration()?;
 
     let postgres_data_access = PostgresUsers::new(config.connection_string()).await?;
-    
-    let shared_state = Arc::new(AppState{
-        data_access: postgres_data_access
+
+    let shared_state = Arc::new(AppState {
+        data_access: postgres_data_access,
     });
-    
+
+    let context = CustomContext;
+
+    let consumer: LoggingConsumer = ClientConfig::new()
+        .set("group.id", config.kafka_group_id())
+        .set("bootstrap.servers", config.kafka_broker())
+        .set_log_level(RDKafkaLogLevel::Debug)
+        .create_with_context(context)
+        .expect("Consumer creation failed");
+
+    let channels = vec!["order-completed"];
+    consumer
+        .subscribe(&channels)
+        .expect("Can't subscribe to specified topics");
+
+    loop {
+        // Perform some background task
+        log::info!("Background worker is running...");
+        match consumer.recv().await {
+            Err(e) => tracing::warn!("Kafka error: {}", e),
+            Ok(m) => {
+                info!("Received message");
+                info!("Message: {:?}", m.payload_view::<str>());
+            }
+        }
+        tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+    }
+}
+
+pub async fn start_api() -> Result<(), ApplicationError> {
+    let config = Config::get_configuration()?;
+
+    let postgres_data_access = PostgresUsers::new(config.connection_string()).await?;
+
+    let shared_state = Arc::new(AppState {
+        data_access: postgres_data_access,
+    });
+
     // build our application with a route
     let app = Router::new()
         // `POST /users` goes to `register_user`
@@ -60,13 +112,13 @@ pub async fn start() -> Result<(), ApplicationError> {
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", config.app_port()))
         .await
         .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
-    
+
     log::info!("listening on {}", listener.local_addr().unwrap());
-    
+
     axum::serve(listener, app.into_make_service())
         .await
         .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
-    
+
     Ok(())
 }
 
@@ -88,25 +140,17 @@ async fn register_user<TDataAccess: DataAccess + Send + Sync>(
                 Err(e) => {
                     log::error!("{:?}", e);
                     match e {
-                        ApplicationError::UserDoesNotExist => {
-                            (StatusCode::NOT_FOUND, Json(None))
-                        }
-                        _ => {
-                            (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-                        }
+                        ApplicationError::UserDoesNotExist => (StatusCode::NOT_FOUND, Json(None)),
+                        _ => (StatusCode::INTERNAL_SERVER_ERROR, Json(None)),
                     }
                 }
             }
-        },
+        }
         Err(e) => {
             log::error!("{:?}", e);
             match e {
-                ApplicationError::UserDoesNotExist => {
-                    (StatusCode::NOT_FOUND, Json(None))
-                },
-                _ => {
-                    (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-                }
+                ApplicationError::UserDoesNotExist => (StatusCode::NOT_FOUND, Json(None)),
+                _ => (StatusCode::INTERNAL_SERVER_ERROR, Json(None)),
             }
         }
     }
@@ -119,25 +163,22 @@ async fn login<TDataAccess: DataAccess + Send + Sync>(
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<LoginRequest>,
 ) -> (StatusCode, Json<Option<UserDetails>>) {
-    let user = state.data_access.with_email_address(&payload.email_address).await;
-    
-    match user { 
-        Ok(user) =>{
-            match user.verify_password(&payload.password) {
-                Ok(_) => (StatusCode::OK, Json(Some(user.details().clone()))),
-                Err(_) => (StatusCode::UNAUTHORIZED, Json(None)),
-            }
+    let user = state
+        .data_access
+        .with_email_address(&payload.email_address)
+        .await;
+
+    match user {
+        Ok(user) => match user.verify_password(&payload.password) {
+            Ok(_) => (StatusCode::OK, Json(Some(user.details().clone()))),
+            Err(_) => (StatusCode::UNAUTHORIZED, Json(None)),
         },
         Err(e) => {
             log::error!("{:?}", e);
-            match e { 
-                ApplicationError::UserDoesNotExist => {
-                    (StatusCode::NOT_FOUND, Json(None))
-                },
-                _ => {
-                    (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-                }
-            } 
+            match e {
+                ApplicationError::UserDoesNotExist => (StatusCode::NOT_FOUND, Json(None)),
+                _ => (StatusCode::INTERNAL_SERVER_ERROR, Json(None)),
+            }
         }
     }
 }
@@ -156,18 +197,14 @@ async fn get_user_details<TDataAccess: DataAccess + Send + Sync>(
         Err(e) => {
             log::error!("{:?}", e);
             match e {
-                ApplicationError::UserDoesNotExist => {
-                    (StatusCode::NOT_FOUND, Json(None))
-                }
-                _ => {
-                    (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-                }
+                ApplicationError::UserDoesNotExist => (StatusCode::NOT_FOUND, Json(None)),
+                _ => (StatusCode::INTERNAL_SERVER_ERROR, Json(None)),
             }
-        },
+        }
     }
 }
 
-struct OtelGuard {
+pub struct OtelGuard {
     tracer_provider: SdkTracerProvider,
 }
 
@@ -193,7 +230,6 @@ fn resource() -> Resource {
         .build()
 }
 
-
 // Construct TracerProvider for OpenTelemetryLayer
 fn init_tracer_provider() -> SdkTracerProvider {
     let exporter = opentelemetry_otlp::SpanExporter::builder()
@@ -214,7 +250,7 @@ fn init_tracer_provider() -> SdkTracerProvider {
 }
 
 // Initialize tracing-subscriber and return OtelGuard for opentelemetry-related termination processing
-fn init_tracing_subscriber() -> OtelGuard {
+pub fn init_tracing_subscriber() -> OtelGuard {
     let tracer_provider = init_tracer_provider();
 
     let tracer = tracer_provider.tracer("users-service");
@@ -226,18 +262,16 @@ fn init_tracing_subscriber() -> OtelGuard {
         .with(OpenTelemetryLayer::new(tracer))
         .init();
 
-    OtelGuard {
-        tracer_provider,
-    }
+    OtelGuard { tracer_provider }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
     use super::*;
     use crate::core::{ApplicationError, User};
-    use std::sync::Arc;
     use mockall::mock;
+    use std::collections::HashMap;
+    use std::sync::Arc;
 
     // Create a mock implementation for testing
     struct ManualMockDataAccess {
@@ -252,7 +286,7 @@ mod tests {
             }
         }
     }
-    
+
     mock! {
         DataAccess{}
         #[async_trait::async_trait]
@@ -264,7 +298,10 @@ mod tests {
 
     #[async_trait::async_trait]
     impl DataAccess for ManualMockDataAccess {
-        async fn with_email_address(&self, email_address: &str) -> std::result::Result<User, ApplicationError> {
+        async fn with_email_address(
+            &self,
+            email_address: &str,
+        ) -> std::result::Result<User, ApplicationError> {
             if let Some(user) = self.users.get(email_address) {
                 Ok(user.clone())
             } else {
@@ -282,7 +319,7 @@ mod tests {
     async fn test_register_user_with_manual_mock() {
         let mock_data_access = ManualMockDataAccess::new();
         let shared_state = Arc::new(AppState {
-            data_access: mock_data_access
+            data_access: mock_data_access,
         });
 
         let (status, response) = register_user(
@@ -292,8 +329,9 @@ mod tests {
                 name: "Test User".to_string(),
                 password: "Testing!23".to_string(),
             }),
-        ).await;
-        
+        )
+        .await;
+
         assert_eq!(status, StatusCode::CREATED);
     }
 
@@ -302,12 +340,10 @@ mod tests {
         let mut mock_data_access = MockDataAccess::new();
         mock_data_access
             .expect_store()
-            .withf(|user| {
-                user.email_address() == "test@test.com".to_string()
-            })
+            .withf(|user| user.email_address() == "test@test.com".to_string())
             .return_once(move |_| Ok(()));
         let shared_state = Arc::new(AppState {
-            data_access: mock_data_access
+            data_access: mock_data_access,
         });
 
         let (status, response) = register_user(
@@ -317,7 +353,8 @@ mod tests {
                 name: "Test User".to_string(),
                 password: "Testing!23".to_string(),
             }),
-        ).await;
+        )
+        .await;
 
         assert_eq!(status, StatusCode::CREATED);
     }

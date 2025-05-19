@@ -1,0 +1,11 @@
+{
+    "database": {
+        "connection_string": "postgresql://postgres:mysupersecretlocalpassword@localhost:5432/users"
+    },
+    "messaging": {
+        "broker": "localhost:9092",
+        "username": "",
+        "password": "",
+        "group_id": "users"
+    }
+}
