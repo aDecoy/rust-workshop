@@ -17,3 +17,12 @@ mockall = {version = "0.13.1"}
 figment = {version="0.10.19", features = ["json", "env"]}
 
 [dev-dependencies]
+
+
+[lib]
+path = "src/lib.rs"
+name = "rust_users_lib"
+
+[[bin]]
+path = "src/main.rs"
+name = "rust_users"

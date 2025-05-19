@@ -10,6 +10,7 @@ members = [
     "module8/rust_app",
     "module9/rust_app",
     "module10/rust_app",
+    "module11/rust_app",
 ]
 
 resolver = "2" # Use the new feature resolver
