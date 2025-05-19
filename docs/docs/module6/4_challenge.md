@@ -10,9 +10,22 @@ Now it's time to apply what you've learned about modular architecture! In this m
 2. Create separate modules for:
    - `core`: Containing your domain models and business logic, this should use the folder (`core`) method for defining a module
    - `data_access.rs`: Containing your data storage mechanism, this should use the single file method for defining a module
-   - `main.rs`: For your API endpoints and application setup
+   - `lib.rs`: For your application library, all the setup code for your Axum API should live here
+   - `main.rs`: The binary for your application entry point, simple a `main()` function that calls into your library
 3. Apply appropriate visibility modifiers to enforce architectural boundaries
 4. Ensure all modules are properly connected and the API still works as expected
+
+
+*syntax for having both a library and a binary in the same project*
+```toml
+[lib]
+path = "src/lib.rs"
+name = "rust_users_app"
+
+[[bin]]
+path = "src/main.rs"
+name = "rust_users"
+```
 
 Specifically, you need to:
 - Move all domain types (User, UserDetails) and their implementations to the core module
