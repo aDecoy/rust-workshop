@@ -119,6 +119,14 @@ const config: Config = {
       darkTheme: prismThemes.oneDark,
       additionalLanguages: ["rust", "csharp", "bash"],
     },
+    algolia: {
+      appId: "1ZNZB6R10K",
+
+      // Public API key: it is safe to commit it
+      apiKey: "c26f587b58b7983e04ab82b1c5e56c91",
+
+      indexName: "rustfor",
+    },
   } satisfies Preset.ThemeConfig,
 };
 
