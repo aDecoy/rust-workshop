@@ -4,9 +4,9 @@ sidebar_position: 7
 
 # Challenge
 
-Expand the functionality of the `User` enum a little bit:
+Expand the functionality of the `UserDetails` struct a little bit:
 
-1. Add an *optional* age property to the UserDetails struct
+1. Add an *optional* age property
 2. Add a new `update_age` function to update a users age with a new value
 3. Add a `whats_my_age()` function to return the users age
 4. Update the console application to test out your new functions
