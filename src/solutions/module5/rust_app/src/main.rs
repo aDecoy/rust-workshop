@@ -47,12 +47,6 @@ async fn register_user(
     (StatusCode::CREATED, Json(user.details().clone()))
 }
 
-async fn get_all_users(Extension(state): Extension<SharedState>)
-    -> (StatusCode, Json<Vec<User>>) {
-    let users = &state.read().await.users;
-    (StatusCode::OK, Json(user_details))
-}
-
 async fn get_user_details(
     Extension(state): Extension<SharedState>,
     Path(email_address): Path<String>,
