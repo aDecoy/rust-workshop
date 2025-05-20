@@ -36,6 +36,23 @@ Now it's time to apply what you've learned about database access with SQLx! In t
    - Initialize the PostgresUsers data access in your main function
    - Make sure all API endpoints correctly handle database errors
 
+## The SQL Queries you will need
+
+### Get User
+
+```sql
+SELECT email_address, name, password
+FROM users
+WHERE email_address = $1
+```
+
+### Insert User
+
+```sql
+INSERT INTO users ( email_address, name, password )
+VALUES ( $1, $2, $3 )
+```
+
 The starter code for this challenge is [available on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/examples/module8/rust_app).
 
 If you're struggling, you can find [a solution on GitHub](https://github.com/jeastham1993/rust-for-dotnet-devs-workshop/tree/main/src/solutions/module8/rust_app). Try it on your own first, if you're finding it difficult that's good. It means you're learning.
