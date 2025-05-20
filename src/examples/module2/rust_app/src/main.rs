@@ -1,5 +1,5 @@
 fn main() {
-    let user = User{
+    let user = User {
         name: "James".to_string(),
     };
 
@@ -21,4 +21,3 @@ impl User {
         self.name = new_name.to_string();
     }
 }
-

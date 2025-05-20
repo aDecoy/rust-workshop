@@ -1,5 +1,5 @@
-use std::sync::{Arc, RwLock};
 use crate::core::User;
+use std::sync::{Arc, RwLock};
 
 #[derive(Default)]
 pub struct AppState {

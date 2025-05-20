@@ -1,5 +1,5 @@
-use sqlx::PgPool;
 use crate::core::{ApplicationError, DataAccess, User};
+use sqlx::PgPool;
 
 pub struct PostgresUsers {
     db: PgPool,
@@ -8,14 +8,12 @@ pub struct PostgresUsers {
 impl PostgresUsers {
     pub async fn new(connection_string: String) -> Result<Self, ApplicationError> {
         log::info!("Attempting to connect to the database");
-        
+
         let database_pool = PgPool::connect(&connection_string)
             .await
             .map_err(|e| ApplicationError::DatabaseError(e.to_string()))?;
 
-        Ok(Self {
-            db: database_pool,
-        })
+        Ok(Self { db: database_pool })
     }
 }
 
@@ -23,7 +21,7 @@ impl PostgresUsers {
 impl DataAccess for PostgresUsers {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError> {
         log::info!("Attempting to retrieve user from email address");
-        
+
         let email = sqlx::query!(
             r#"
             SELECT email_address, name, password
@@ -32,25 +30,25 @@ impl DataAccess for PostgresUsers {
             "#,
             email_address,
         )
-            .fetch_optional(&self.db)
-            .await;
-        
+        .fetch_optional(&self.db)
+        .await;
+
         match email {
             Ok(record) => match record {
                 Some(data) => {
                     let user = User::from(&data.email_address, &data.name, &data.password);
-                    
+
                     Ok(user)
-                },
-                None => Err(ApplicationError::UserDoesNotExist)
+                }
+                None => Err(ApplicationError::UserDoesNotExist),
             },
-            Err(_) => Err(ApplicationError::UserDoesNotExist)
+            Err(_) => Err(ApplicationError::UserDoesNotExist),
         }
     }
 
     async fn store(&self, user: User) -> Result<(), ApplicationError> {
         log::info!("Attempting to create user in the database");
-        
+
         let _rec = sqlx::query!(
             r#"
     INSERT INTO users ( email_address, name, password )
@@ -60,8 +58,8 @@ impl DataAccess for PostgresUsers {
             user.name(),
             user.password()
         )
-            .fetch_one(&self.db)
-            .await;
+        .fetch_one(&self.db)
+        .await;
 
         Ok(())
     }

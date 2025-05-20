@@ -7,17 +7,17 @@ async fn main() {
     // Idiomatic Rust use snake case instead of camelCase
     let str_example: &str = "Hello";
     println!("{}", str_example);
-    
+
     // A string is a heap-allocated string. It's growable, and can be modified
     let string_example: String = "Hello".to_string();
     println!("{}", string_example);
-    
+
     let integer_example: i32 = 10;
     println!("{}", str_example);
 
     let float_example: f32 = 10.0;
     println!("{}", float_example);
-    
+
     // Arrays are fixed size in Rust, and the size is declared at initialization
     let array_example: [i32; 3] = [1, 2, 3];
     println!("{}", array_example.len());
@@ -57,7 +57,7 @@ async fn main() {
     let mut user = User::new("dev@jameseastham.co.uk", "James");
 
     user.say_hello();
-    
+
     user.update_email_address("John");
 
     user.say_hello();
@@ -86,7 +86,7 @@ impl User {
             name: name.to_string(),
         }
     }
-    
+
     // &mut self is used because you want to mutate the data in this instance of the struct
     fn update_email_address(&mut self, email_address: &str) {
         self.email_address = email_address.to_string();
@@ -105,7 +105,7 @@ impl User {
         PremiumUser {
             email_address: self.email_address,
             name: self.name,
-            is_premium: true
+            is_premium: true,
         }
     }
 }

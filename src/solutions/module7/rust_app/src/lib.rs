@@ -1,38 +1,38 @@
 mod core;
 mod data_access;
 
-use core::UserDto;
-use std::sync::Arc;
 use crate::core::{DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails};
+use crate::data_access::InMemoryDataAccess;
 use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Json, Router};
-use crate::data_access::InMemoryDataAccess;
+use core::UserDto;
+use std::sync::Arc;
 
 // Wrap all of our shared state/dependencies in a single struct
 // Using a generic.
 // This is saying the TDataAccess type should implement DataAccess and be thread-safe.
 // Which we have by using the Arc data type
 pub struct AppState<TDataAccess: DataAccess> {
-    pub data_access: TDataAccess
+    pub data_access: TDataAccess,
 }
 
 pub async fn start() {
     // Initialize a new instance of our application state on startup
-    let app_state = AppState{
-        data_access: InMemoryDataAccess::new()
+    let app_state = AppState {
+        data_access: InMemoryDataAccess::new(),
     };
-    
+
     // Wrap our application state in an Arc, which is a thread-safe reference-counted pointer
     let shared_state = Arc::new(app_state);
-    
+
     let app = Router::new()
         .route("/users", post(register_user))
         .route("/login", post(login))
         .route("/users/{email_address}", get(get_user_details))
         // Add the shared state to our app using the with_state function
         .with_state(shared_state);
-    
+
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app.into_make_service())
         .await
@@ -53,7 +53,7 @@ async fn register_user<TDataAccess: DataAccess + Send + Sync>(
     let existing_user = state.data_access.with_email_address(&user.email_address());
 
     state.data_access.store(user.clone());
-    
+
     (StatusCode::CREATED, Json(user.details().clone()))
 }
 

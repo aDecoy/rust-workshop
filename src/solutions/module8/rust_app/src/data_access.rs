@@ -1,5 +1,5 @@
-use sqlx::PgPool;
 use crate::core::{ApplicationError, DataAccess, User};
+use sqlx::PgPool;
 
 pub struct PostgresUsers {
     db: PgPool,
@@ -11,9 +11,7 @@ impl PostgresUsers {
             .await
             .map_err(|e| ApplicationError::DatabaseError(e.to_string()))?;
 
-        Ok(Self {
-            db: database_pool,
-        })
+        Ok(Self { db: database_pool })
     }
 }
 
@@ -29,10 +27,10 @@ impl DataAccess for PostgresUsers {
             "#,
             email_address,
         )
-            // Query the database, returning an Option if no row is found
-            .fetch_optional(&self.db)
-            .await;
-        
+        // Query the database, returning an Option if no row is found
+        .fetch_optional(&self.db)
+        .await;
+
         // Check to see if the Option is Some or None
         match email {
             // If it is, parse the record
@@ -41,12 +39,12 @@ impl DataAccess for PostgresUsers {
                     // Create a new User instance from the data, the data struct
                     // is strongly typed based on database properties.
                     let user = User::from(&data.email_address, &data.name, &data.password);
-                    
+
                     Ok(user)
-                },
-                None => Err(ApplicationError::UserDoesNotExist)
+                }
+                None => Err(ApplicationError::UserDoesNotExist),
             },
-            Err(_) => Err(ApplicationError::UserDoesNotExist)
+            Err(_) => Err(ApplicationError::UserDoesNotExist),
         }
     }
 
@@ -61,8 +59,8 @@ impl DataAccess for PostgresUsers {
             user.name(),
             user.password()
         )
-            .fetch_one(&self.db)
-            .await;
+        .fetch_one(&self.db)
+        .await;
 
         Ok(())
     }

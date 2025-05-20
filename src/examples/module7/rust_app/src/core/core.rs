@@ -69,7 +69,7 @@ impl User {
             } => user_details.email_address.clone(),
         }
     }
-    
+
     fn update_name(&mut self, new_name: &str) {
         let mut user_details = match self {
             // The '*' is used to dereference the value of the variable, so you can change it.

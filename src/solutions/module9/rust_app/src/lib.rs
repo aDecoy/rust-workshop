@@ -3,28 +3,28 @@ mod data_access;
 
 pub use crate::core::ApplicationError;
 
-use anyhow::Result;
 use crate::core::{DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails};
 use crate::data_access::PostgresUsers;
+use anyhow::Result;
 use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Json, Router};
-use std::sync::Arc;
 use core::Config;
+use std::sync::Arc;
 
 pub struct AppState<TDataAccess: DataAccess> {
-    pub data_access: TDataAccess
+    pub data_access: TDataAccess,
 }
 
 pub async fn start() -> Result<(), ApplicationError> {
     let config = Config::get_configuration()?;
 
     let postgres_data_access = PostgresUsers::new(config.connection_string()).await?;
-    
-    let shared_state = Arc::new(AppState{
-        data_access: postgres_data_access
+
+    let shared_state = Arc::new(AppState {
+        data_access: postgres_data_access,
     });
-    
+
     // build our application with a route
     let app = Router::new()
         // `POST /users` goes to `register_user`
@@ -39,11 +39,11 @@ pub async fn start() -> Result<(), ApplicationError> {
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", config.app_port()))
         .await
         .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
-    
+
     axum::serve(listener, app.into_make_service())
         .await
         .map_err(|e| ApplicationError::ApplicationError(e.to_string()))?;
-    
+
     Ok(())
 }
 
@@ -62,25 +62,15 @@ async fn register_user<TDataAccess: DataAccess + Send + Sync>(
             match data_access {
                 Ok(_) => (StatusCode::CREATED, Json(Some(user.details().clone()))),
                 Err(e) => match e {
-                    ApplicationError::UserDoesNotExist => {
-                        (StatusCode::NOT_FOUND, Json(None))
-                    },
-                    _ => {
-                        (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-                    }
-                } 
-            }
-        },
-        Err(e) => {
-            match e {
-                ApplicationError::UserDoesNotExist => {
-                    (StatusCode::NOT_FOUND, Json(None))
+                    ApplicationError::UserDoesNotExist => (StatusCode::NOT_FOUND, Json(None)),
+                    _ => (StatusCode::INTERNAL_SERVER_ERROR, Json(None)),
                 },
-                _ => {
-                    (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-                }
             }
         }
+        Err(e) => match e {
+            ApplicationError::UserDoesNotExist => (StatusCode::NOT_FOUND, Json(None)),
+            _ => (StatusCode::INTERNAL_SERVER_ERROR, Json(None)),
+        },
     }
 }
 
@@ -90,25 +80,20 @@ async fn login<TDataAccess: DataAccess + Send + Sync>(
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<LoginRequest>,
 ) -> (StatusCode, Json<Option<UserDetails>>) {
-    let user = state.data_access.with_email_address(&payload.email_address).await;
-    
-    match user { 
-        Ok(user) =>{
-            match user.verify_password(&payload.password) {
-                Ok(_) => (StatusCode::OK, Json(Some(user.details().clone()))),
-                Err(_) => (StatusCode::UNAUTHORIZED, Json(None)),
-            }
+    let user = state
+        .data_access
+        .with_email_address(&payload.email_address)
+        .await;
+
+    match user {
+        Ok(user) => match user.verify_password(&payload.password) {
+            Ok(_) => (StatusCode::OK, Json(Some(user.details().clone()))),
+            Err(_) => (StatusCode::UNAUTHORIZED, Json(None)),
         },
-        Err(e) => {
-            match e { 
-                ApplicationError::UserDoesNotExist => {
-                    (StatusCode::NOT_FOUND, Json(None))
-                },
-                _ => {
-                    (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-                }
-            } 
-        }
+        Err(e) => match e {
+            ApplicationError::UserDoesNotExist => (StatusCode::NOT_FOUND, Json(None)),
+            _ => (StatusCode::INTERNAL_SERVER_ERROR, Json(None)),
+        },
     }
 }
 
@@ -123,23 +108,19 @@ async fn get_user_details<TDataAccess: DataAccess + Send + Sync>(
     match user {
         Ok(user) => (StatusCode::OK, Json(Some(user.details().clone()))),
         Err(e) => match e {
-            ApplicationError::UserDoesNotExist => {
-                (StatusCode::NOT_FOUND, Json(None))
-            },
-            _ => {
-                (StatusCode::INTERNAL_SERVER_ERROR, Json(None))
-            }
+            ApplicationError::UserDoesNotExist => (StatusCode::NOT_FOUND, Json(None)),
+            _ => (StatusCode::INTERNAL_SERVER_ERROR, Json(None)),
         },
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
     use super::*;
     use crate::core::{ApplicationError, User};
-    use std::sync::Arc;
     use mockall::mock;
+    use std::collections::HashMap;
+    use std::sync::Arc;
 
     // Create a mock implementation for testing
     struct ManualMockDataAccess {
@@ -154,7 +135,7 @@ mod tests {
             }
         }
     }
-    
+
     mock! {
         DataAccess{}
         #[async_trait::async_trait]
@@ -166,7 +147,10 @@ mod tests {
 
     #[async_trait::async_trait]
     impl DataAccess for ManualMockDataAccess {
-        async fn with_email_address(&self, email_address: &str) -> std::result::Result<User, ApplicationError> {
+        async fn with_email_address(
+            &self,
+            email_address: &str,
+        ) -> std::result::Result<User, ApplicationError> {
             if let Some(user) = self.users.get(email_address) {
                 Ok(user.clone())
             } else {
@@ -184,7 +168,7 @@ mod tests {
     async fn test_register_user_with_manual_mock() {
         let mock_data_access = ManualMockDataAccess::new();
         let shared_state = Arc::new(AppState {
-            data_access: mock_data_access
+            data_access: mock_data_access,
         });
 
         let (status, response) = register_user(
@@ -194,8 +178,9 @@ mod tests {
                 name: "Test User".to_string(),
                 password: "Testing!23".to_string(),
             }),
-        ).await;
-        
+        )
+        .await;
+
         assert_eq!(status, StatusCode::CREATED);
     }
 
@@ -204,12 +189,10 @@ mod tests {
         let mut mock_data_access = MockDataAccess::new();
         mock_data_access
             .expect_store()
-            .withf(|user| {
-                user.email_address() == "test@test.com".to_string()
-            })
+            .withf(|user| user.email_address() == "test@test.com".to_string())
             .return_once(move |_| Ok(()));
         let shared_state = Arc::new(AppState {
-            data_access: mock_data_access
+            data_access: mock_data_access,
         });
 
         let (status, response) = register_user(
@@ -219,7 +202,8 @@ mod tests {
                 name: "Test User".to_string(),
                 password: "Testing!23".to_string(),
             }),
-        ).await;
+        )
+        .await;
 
         assert_eq!(status, StatusCode::CREATED);
     }

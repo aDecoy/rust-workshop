@@ -1,4 +1,4 @@
-// Tell the compiler that there is another module in this 
+// Tell the compiler that there is another module in this
 // application. By convention the name of the file should match
 // the name of the module
 

@@ -70,7 +70,6 @@ impl From<User> for UserDto {
     }
 }
 
-
 impl Default for User {
     fn default() -> Self {
         User::Standard {
@@ -82,7 +81,9 @@ impl Default for User {
 impl std::fmt::Display for User {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            User::Standard { user_details } => write!(f, "Standard User: {}", user_details.email_address),
+            User::Standard { user_details } => {
+                write!(f, "Standard User: {}", user_details.email_address)
+            }
             User::Premium {
                 user_details,
                 is_premium: _,

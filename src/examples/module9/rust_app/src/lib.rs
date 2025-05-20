@@ -3,9 +3,7 @@ mod data_access;
 
 pub use crate::core::ApplicationError;
 
-use crate::core::{
-    DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails,
-};
+use crate::core::{DataAccess, LoginRequest, RegisterUserRequest, User, UserDetails};
 use crate::data_access::PostgresUsers;
 use anyhow::Result;
 use axum::extract::{Path, State};

@@ -1,5 +1,5 @@
 fn main() {
-    let mut user = User{
+    let mut user = User {
         name: "James".to_string(),
     };
 
@@ -29,4 +29,3 @@ impl User {
         Ok(())
     }
 }
-

@@ -1,3 +1,3 @@
 mod core;
 
-pub use core::{LoginRequest, RegisterUserRequest, User, UserDetails,};
+pub use core::{LoginRequest, RegisterUserRequest, User, UserDetails};

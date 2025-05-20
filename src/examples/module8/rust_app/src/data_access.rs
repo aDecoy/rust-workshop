@@ -1,5 +1,5 @@
-use std::sync::Mutex;
 use crate::core::{DataAccess, User};
+use std::sync::Mutex;
 
 pub struct InMemoryDataAccess {
     // Mutex is a type that provides safe concurrent access to a value
@@ -7,7 +7,7 @@ pub struct InMemoryDataAccess {
 }
 
 impl InMemoryDataAccess {
-    pub  fn new() -> InMemoryDataAccess {
+    pub fn new() -> InMemoryDataAccess {
         InMemoryDataAccess {
             users: Mutex::new(Vec::new()),
         }
@@ -16,9 +16,14 @@ impl InMemoryDataAccess {
 
 impl DataAccess for InMemoryDataAccess {
     fn with_email_address(&self, email_address: &str) -> Option<User> {
-        // .lock() is a method on Mutex that locks the value 
-        // inside the Mutex allowing it to be accessed safely 
-        self.users.lock().unwrap().iter().find(|u| u.email_address() == email_address).cloned()
+        // .lock() is a method on Mutex that locks the value
+        // inside the Mutex allowing it to be accessed safely
+        self.users
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|u| u.email_address() == email_address)
+            .cloned()
     }
 
     fn store(&self, user: User) {

@@ -1,14 +1,14 @@
-// Tell the compiler that there is another module in this 
+// Tell the compiler that there is another module in this
 // application. By convention the name of the file should match
 // the name of the module
 mod core;
 mod data_access;
 
 use crate::core::{LoginRequest, RegisterUserRequest, User, UserDetails};
+use crate::data_access::SharedState;
 use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Extension, Json, Router};
-use crate::data_access::SharedState;
 
 pub async fn run() {
     // build our application with a route

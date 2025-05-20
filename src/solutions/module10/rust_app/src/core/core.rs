@@ -1,9 +1,9 @@
-use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use argon2::password_hash::rand_core::OsRng;
 use argon2::password_hash::SaltString;
+use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use regex::Regex;
 use tracing::{span, Level};
 
 #[derive(Error, Debug)]
@@ -66,10 +66,10 @@ impl User {
     pub fn new(email_address: &str, name: &str, password: &str) -> Result<User, ApplicationError> {
         let span = span!(Level::INFO, "user.new", "user.type" = "standard");
         let _entered = span.enter();
-        
+
         User::email_is_valid(email_address)?;
         User::password_is_valid(password)?;
-        
+
         Ok(User::Standard {
             user_details: UserDetails {
                 email_address: email_address.to_string(),
@@ -94,12 +94,15 @@ impl User {
     fn hash(password: &str) -> Result<String, ApplicationError> {
         let argon2 = Argon2::default();
         let salt = SaltString::generate(&mut OsRng);
-        let hash = argon2.hash_password(password.as_bytes(), &salt)
-            .map_err(|_| ApplicationError::ApplicationError("Failed to hash password".to_string()))?;
+        let hash = argon2
+            .hash_password(password.as_bytes(), &salt)
+            .map_err(|_| {
+                ApplicationError::ApplicationError("Failed to hash password".to_string())
+            })?;
 
         Ok(hash.to_string())
     }
-    
+
     pub fn details(&self) -> &UserDetails {
         match self {
             User::Standard { user_details } => user_details,
@@ -109,7 +112,7 @@ impl User {
             } => user_details,
         }
     }
-    
+
     pub fn email_address(&self) -> String {
         match self {
             User::Standard { user_details } => user_details.email_address.clone(),
@@ -119,7 +122,7 @@ impl User {
             } => user_details.email_address.clone(),
         }
     }
-    
+
     pub fn name(&self) -> String {
         match self {
             User::Standard { user_details } => user_details.name.clone(),
@@ -129,7 +132,7 @@ impl User {
             } => user_details.name.clone(),
         }
     }
-    
+
     pub fn password(&self) -> String {
         match self {
             User::Standard { user_details } => user_details.password.clone(),
@@ -187,41 +190,51 @@ impl User {
 
     pub fn verify_password(&self, password: &str) -> Result<(), ApplicationError> {
         let users_password = &self.password().clone();
-        
-        let parsed_hash = PasswordHash::new(users_password).map_err(|_| ApplicationError::ApplicationError("Failed to parse password hash".to_string()))?;
-        
-        let verified_password = Argon2::default()
-            .verify_password(password.as_bytes(), &parsed_hash);
-        
+
+        let parsed_hash = PasswordHash::new(users_password).map_err(|_| {
+            ApplicationError::ApplicationError("Failed to parse password hash".to_string())
+        })?;
+
+        let verified_password =
+            Argon2::default().verify_password(password.as_bytes(), &parsed_hash);
+
         match verified_password {
             Ok(_) => Ok(()),
-            Err(_) => Err(ApplicationError::IncorrectPassword)
-        } 
+            Err(_) => Err(ApplicationError::IncorrectPassword),
+        }
     }
 
     fn password_is_valid(password: &str) -> Result<(), ApplicationError> {
         if password.len() < 8 {
             tracing::Span::current().record("user.password_is_valid", "false");
-            return Err(ApplicationError::ApplicationError("Password must be at least 8 characters long".to_string()));
+            return Err(ApplicationError::ApplicationError(
+                "Password must be at least 8 characters long".to_string(),
+            ));
         }
         if !password.chars().any(|c| c.is_uppercase()) {
             tracing::Span::current().record("user.password_is_valid", "false");
-            return Err(ApplicationError::ApplicationError("Password must contain at least one uppercase letter".to_string()));
+            return Err(ApplicationError::ApplicationError(
+                "Password must contain at least one uppercase letter".to_string(),
+            ));
         }
         if !password.chars().any(|c| c.is_lowercase()) {
             tracing::Span::current().record("user.password_is_valid", "false");
-            return Err(ApplicationError::ApplicationError("Password must contain at least one lowercase letter".to_string()));
+            return Err(ApplicationError::ApplicationError(
+                "Password must contain at least one lowercase letter".to_string(),
+            ));
         }
         if !password.chars().any(|c| c.is_ascii_digit()) {
             tracing::Span::current().record("user.password_is_valid", "false");
-            return Err(ApplicationError::ApplicationError("Password must contain at least one digit".to_string()));
+            return Err(ApplicationError::ApplicationError(
+                "Password must contain at least one digit".to_string(),
+            ));
         }
-        
+
         tracing::Span::current().record("user.password_is_valid", "true");
-        
+
         Ok(())
     }
-    
+
     fn email_is_valid(input: &str) -> Result<(), ApplicationError> {
         let re = Regex::new(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").unwrap();
         if re.is_match(input) {
@@ -229,7 +242,9 @@ impl User {
             Ok(())
         } else {
             tracing::Span::current().record("user.email_is_valid", "false");
-            Err(ApplicationError::ApplicationError("Invalid email address".to_string()))
+            Err(ApplicationError::ApplicationError(
+                "Invalid email address".to_string(),
+            ))
         }
     }
 }
@@ -241,7 +256,7 @@ mod tests {
     #[test]
     fn when_new_user_is_created_should_be_standard() {
         let user = User::new("test@test.com", "James", "James!23").unwrap();
-        
+
         if let User::Standard { user_details } = user {
             assert_eq!(user_details.email_address, "test@test.com");
             assert_eq!(user_details.name, "James");
@@ -253,10 +268,14 @@ mod tests {
     #[test]
     fn when_user_is_updated_to_premium_should_be_premium_user() {
         let user = User::new("test@test.com", "James", "James!23").unwrap();
-        
+
         let premium_user = user.update_to_premium();
 
-        if let User::Premium { user_details, is_premium } = premium_user {
+        if let User::Premium {
+            user_details,
+            is_premium,
+        } = premium_user
+        {
             assert_eq!(user_details.email_address, "test@test.com");
             assert_eq!(user_details.name, "James");
         } else {
@@ -269,7 +288,7 @@ mod tests {
         let mut user = User::new("test@test.com", "James", "James!23").unwrap();
 
         assert_eq!(user.details().age, None);
-        
+
         user.update_age(10);
 
         assert_eq!(user.details().age.unwrap(), 10);
@@ -280,7 +299,7 @@ mod tests {
         let mut user = User::new("test@test.com", "James", "James!23").unwrap();
 
         assert_eq!(user.details().name, "James");
-        
+
         user.update_name("John");
 
         assert_eq!(user.details().name, "John");
@@ -303,11 +322,11 @@ mod tests {
     #[test]
     fn when_user_is_created_should_verify_a_matching_password() {
         let user = User::new("test@test.com", "James", "James!23").unwrap();
-        
+
         assert_ne!(user.password(), "Test!23");
-        
+
         let is_password_valid = user.verify_password("James!23");
-        
+
         assert!(is_password_valid.is_ok());
     }
 
