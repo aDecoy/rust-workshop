@@ -90,13 +90,13 @@ async fn main() {
     let app = Router::new()
         .route("/users", post(register_user))
         // Other routes.
-        .layer(Extension(SharedState::default()));
+        .with_state(SharedState::default());
 
     // Start the server.
 }
 
 async fn register_user(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     Json(payload): Json<RegisterUserRequest>,
 ) -> (StatusCode, Json<UserDetails>) {
     let user = User::new(&payload.email_address, &payload.name, &payload.password);

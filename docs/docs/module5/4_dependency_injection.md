@@ -21,11 +21,11 @@ type SharedState = Arc<RwLock<AppState>>;
 // Configure your router with the shared state
 let app = Router::new()
     .route("/users", post(register_user))
-    .layer(Extension(SharedState::default()));
+    .with_state(SharedState::default());
 
 // Access the state in your handler
 async fn register_user(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     Json(payload): Json<RegisterUserRequest>,
 ) -> (StatusCode, Json<UserDetails>) {
     // Use the shared state

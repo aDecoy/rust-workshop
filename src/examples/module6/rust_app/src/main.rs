@@ -20,7 +20,7 @@ async fn main() {
         // Call the register_user function 
         .route("/users", post(register_user))
         .route("/users/{email_address}", get(get_user_details))
-        .layer(Extension(SharedState::default()));
+        .with_state(SharedState::default());
 
     // Create a TCP listener on port 3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
@@ -34,7 +34,7 @@ async fn main() {
 }
 
 async fn register_user(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<RegisterUserRequest>,
@@ -48,7 +48,7 @@ async fn register_user(
 }
 
 async fn get_user_details(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     Path(email_address): Path<String>,
 ) -> (StatusCode, Json<Option<UserDetails>>) // And the function returns a tuple StatusCode and body 
 {   

@@ -17,7 +17,7 @@ pub async fn run() {
         .route("/users", post(register_user))
         .route("/login", post(login))
         .route("/users/{email_address}", get(get_user_details))
-        .layer(Extension(SharedState::default()));
+        .with_state(SharedState::default());
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
@@ -27,7 +27,7 @@ pub async fn run() {
 }
 
 async fn register_user(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<RegisterUserRequest>,
@@ -42,7 +42,7 @@ async fn register_user(
 }
 
 async fn login(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<LoginRequest>,
@@ -65,7 +65,7 @@ async fn login(
 }
 
 async fn get_user_details(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Path(email_address): Path<String>,

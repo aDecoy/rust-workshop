@@ -1,14 +1,16 @@
-// Tell the compiler that there is another module in this 
+// Tell the compiler that there is another module in this
 // application. By convention the name of the file should match
 // the name of the module
 mod core;
 mod data_access;
 
+use std::sync::Arc;
+
 use crate::core::{LoginRequest, RegisterUserRequest, User, UserDetails};
-use axum::extract::Path;
-use axum::routing::get;
-use axum::{http::StatusCode, routing::post, Extension, Json, Router};
 use crate::data_access::SharedState;
+use axum::extract::{Path, State};
+use axum::routing::get;
+use axum::{http::StatusCode, routing::post, Json, Router};
 
 pub async fn run() {
     // build our application with a route
@@ -17,7 +19,7 @@ pub async fn run() {
         .route("/users", post(register_user))
         .route("/login", post(login))
         .route("/users/{email_address}", get(get_user_details))
-        .layer(Extension(SharedState::default()));
+        .with_state(SharedState::default());
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
@@ -27,7 +29,7 @@ pub async fn run() {
 }
 
 async fn register_user(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<RegisterUserRequest>,
@@ -42,7 +44,7 @@ async fn register_user(
 }
 
 async fn login(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Json(payload): Json<LoginRequest>,
@@ -65,7 +67,7 @@ async fn login(
 }
 
 async fn get_user_details(
-    Extension(state): Extension<SharedState>,
+    State(state): State<SharedState>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
     Path(email_address): Path<String>,
