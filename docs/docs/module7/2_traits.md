@@ -75,3 +75,19 @@ pub trait AsyncDataAccess {
 ```
 
 The `#[async_trait]` macro transforms the async methods into functions that return `Future` implementations, making them compatible with Rust's current trait system.
+
+As well as adding `#[async_trait]` on the trait itself, you also need to add the macro to the implementation block as well:
+
+```rust showLineNumbers
+use async_trait::async_trait;
+
+#[async_trait]
+impl AsyncDataAcess for DataAccessStruct {
+    async fn with_email_address(&self, email_address: &str) -> Option<User> {
+        // Actual implementatoons
+    }
+    async fn store(&self, user: User)  {
+        // Actual implementatoons
+    }
+}
+```
