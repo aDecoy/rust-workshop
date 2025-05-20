@@ -5,7 +5,7 @@ mod core;
 mod data_access;
 
 use crate::core::{LoginRequest, RegisterUserRequest, User, UserDetails};
-use axum::extract::Path;
+use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Extension, Json, Router};
 use crate::data_access::SharedState;
