@@ -10,7 +10,7 @@ axum = { version = "0.8.1", features = ["macros"] }
 serde = { version = "1.0.218", features = ["derive"] }
 thiserror = "2"
 tokio = { version = "1", features = ["full", "signal"] }
-sqlx = {version = "0.8.3", features = ["postgres", "runtime-tokio"]}
+sqlx = {version = "0.8.6", features = ["postgres", "runtime-tokio"]}
 argon2 = "0.5.3"
 regex = "1.11.1"
 mockall = {version = "0.13.1"}
