@@ -23,13 +23,13 @@ Now it's time to apply what you've learned about database access with SQLx! In t
    - Implement the trait methods to query and store users in PostgreSQL
    - Add proper error handling for database operations
 
-4. Create and run a migration to set up your database schema:
+4. Apply your database migrations
    - Install the [SQLx CLI](https://crates.io/crates/sqlx-cli)
-   - Create a migration to create a users table
+   - The actual migration scripts are included in the repo
    - Run the migration to apply your schema
 
    ```sh
-   sqlx migrate add <MIGRATION_NAME>
+   cargo sqlx migrate run
    ```
 
 5. Update your API handlers to work with the new implementation:
