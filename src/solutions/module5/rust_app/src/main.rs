@@ -1,8 +1,8 @@
-use std::sync::Arc;
-use axum::extract::Path;
+use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{http::StatusCode, routing::post, Extension, Json, Router};
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use tokio::sync::RwLock;
 
 /// Holds shared state to be used by the entire application.
@@ -11,7 +11,6 @@ struct AppState {
     /// All the users that are registered in the application.
     users: Vec<User>,
 }
-
 type SharedState = Arc<RwLock<AppState>>;
 
 #[tokio::main]
@@ -22,7 +21,7 @@ async fn main() {
         // Call the register_user function
         .route("/users", post(register_user))
         .route("/users/{email_address}", get(get_user_details))
-        State(state): State<SharedState>,
+        .with_state(SharedState::default());
 
     // Create a TCP listener on port 3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
@@ -56,7 +55,7 @@ async fn get_user_details(
     let user = users
         .iter()
         .find(|user| user.details().email_address == email_address);
-    
+
     match user {
         Some(user) => (StatusCode::OK, Json(Some(user.details().clone()))),
         None => (StatusCode::NOT_FOUND, Json(None)),

@@ -118,3 +118,36 @@ async fn my_handler(
     // Use the service
 }
 ```
+
+Extensions can be used in Axum middleware to inject data into the request as part of some middleware that is running.
+
+```rust showLineNumbers
+
+```
+
+### State (for Shared State)
+
+`State` in Axum works in a similar way to `Extension`, it allows you to inject implementations into your handlers.
+
+```rust showLineNumbers
+#[tokio::main]
+async fn main() {
+    // Create a new router
+    let app = Router::new()
+        // When the /users route is hit, and it'a post request. 
+        // Call the register_user function 
+        .route("/users", post(register_user))
+        .route("/users/{email_address}", get(get_user_details))
+        .with_state(SharedState::default());
+}
+
+async fn register_user(
+    State(state): State<SharedState>,
+    // this argument tells axum to parse the request body
+    // as JSON into a `RegisterUserRequest` type
+    Json(payload): Json<RegisterUserRequest>,
+){}
+
+```
+
+The big difference between `Extension` and `State` is that state is **type safe**, extension is not. In practice, that means if you try to use `State<T>` implementation in your handler at compile time you will get an error if you haven't registered a type that matches. `Extension` will not error at compile time, but will fail at runtime.
