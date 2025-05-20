@@ -14,7 +14,7 @@ use axum::{http::StatusCode, routing::post, Json, Router};
 use core::Config;
 use std::sync::Arc;
 
-pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
+pub struct AppState<TDataAccess: DataAccess> {
     pub data_access: TDataAccess,
 }
 
@@ -46,7 +46,7 @@ pub async fn start() -> Result<(), ApplicationError> {
     Ok(())
 }
 
-async fn register_user<TDataAccess: DataAccess + Send + Sync>(
+async fn register_user<TDataAccess: DataAccess>(
     State(state): State<Arc<AppState<TDataAccess>>>,
     Json(payload): Json<RegisterUserRequest>,
 ) -> (StatusCode, Json<Option<UserDetails>>) {
@@ -72,7 +72,7 @@ async fn register_user<TDataAccess: DataAccess + Send + Sync>(
     }
 }
 
-async fn login<TDataAccess: DataAccess + Send + Sync>(
+async fn login<TDataAccess: DataAccess>(
     State(state): State<Arc<AppState<TDataAccess>>>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type
@@ -95,7 +95,7 @@ async fn login<TDataAccess: DataAccess + Send + Sync>(
     }
 }
 
-async fn get_user_details<TDataAccess: DataAccess + Send + Sync>(
+async fn get_user_details<TDataAccess: DataAccess>(
     State(state): State<Arc<AppState<TDataAccess>>>,
     // this argument tells axum to parse the request body
     // as JSON into a `RegisterUserRequest` type

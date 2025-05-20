@@ -58,7 +58,7 @@ use mockall::{automock, mock};
 
 #[async_trait::async_trait]
 #[automock]
-pub trait DataAccess {
+pub trait DataAccess: Send + Sync {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError>;
     async fn store(&self, user: User) -> Result<(), ApplicationError>;
 }
@@ -74,7 +74,7 @@ use mockall::{automock, predicate::*};
 #[async_trait::async_trait]
 // Add the `automock` macro if a test run
 #[cfg_attr(any(test, feature = "mocks"), automock)]
-pub trait DataAccess {
+pub trait DataAccess: Send + Sync {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError>;
     async fn store(&self, user: User) -> Result<(), ApplicationError>;
 }

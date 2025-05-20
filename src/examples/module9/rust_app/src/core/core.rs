@@ -21,7 +21,7 @@ pub enum ApplicationError {
 }
 
 #[async_trait::async_trait]
-pub trait DataAccess {
+pub trait DataAccess: Send + Sync {
     async fn with_email_address(&self, email_address: &str) -> Result<User, ApplicationError>;
     async fn store(&self, user: User) -> Result<(), ApplicationError>;
 }

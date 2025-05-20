@@ -12,7 +12,7 @@ use axum::{http::StatusCode, routing::post, Json, Router};
 use std::sync::Arc;
 use core::Config;
 
-pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
+pub struct AppState<TDataAccess: DataAccess> {
     pub data_access: TDataAccess
 }
 

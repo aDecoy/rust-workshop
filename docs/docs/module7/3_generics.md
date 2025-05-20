@@ -15,7 +15,7 @@ For this to work, Rust needs a way to figure out the concrete types of all the g
 In your application, you can define a generic `AppState` type:
 
 ```rust showLineNumbers
-pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
+pub struct AppState<TDataAccess: DataAccess> {
     pub data_access: TDataAccess
 }
 ```

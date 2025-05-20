@@ -39,7 +39,7 @@ impl ConsumerContext for CustomContext {}
 
 type LoggingConsumer = StreamConsumer<CustomContext>;
 
-pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
+pub struct AppState<TDataAccess: DataAccess> {
     pub data_access: TDataAccess,
 }
 

@@ -13,7 +13,7 @@ use crate::data_access::InMemoryDataAccess;
 // Using a generic.
 // This is saying the TDataAccess type should implement DataAccess and be thread-safe.
 // Which we have by using the Arc data type
-pub struct AppState<TDataAccess: DataAccess + Send + Sync> {
+pub struct AppState<TDataAccess: DataAccess> {
     pub data_access: TDataAccess
 }
 

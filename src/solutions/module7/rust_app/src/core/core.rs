@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub trait DataAccess {
+pub trait DataAccess: Send + Sync {
     fn with_email_address(&self, email_address: &str) -> Option<User>;
     fn store(&self, user: User);
 }

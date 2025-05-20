@@ -20,7 +20,7 @@ public interface IDataAccess {
 To implement a similar thing in Rust using traits, it would look like:
 
 ```rust showLineNumbers
-pub trait DataAccess {
+pub trait DataAccess: Send + Sync {
     fn with_email_address(&self, email_address: &str) -> Option<User>;
     fn store(&self, user: User);
 }
