@@ -1,5 +1,4 @@
-#[tokio::main]
-async fn main() {
+fn main() {
     // Mut keyword declares this variable as something that can be mutated in the future
     let mut user = User::new("james@eastham.com", "James");
 

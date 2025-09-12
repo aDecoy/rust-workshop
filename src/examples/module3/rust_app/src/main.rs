@@ -1,5 +1,4 @@
-#[tokio::main]
-async fn main() {
+fn main() {
     // A string slice is a view into a string, or a reference to a string.
     // It's fixed size that's known at compile time,
     // It's does not require heap allocation

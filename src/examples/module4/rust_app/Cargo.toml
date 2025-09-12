@@ -1,7 +1,4 @@
 [package]
 name = "module_3_rust_app_enums"
 version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-tokio = { version = "1", features = ["full"] }
+edition = "2024"
