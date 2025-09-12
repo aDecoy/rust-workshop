@@ -1,4 +1,10 @@
-# Rust for .NET Developers
+# Rust workshop
+
+
+
+Dette repoet er forket og modifisert av en workshop fra [https://rustfor.net](https://rustfor.net) laget av jameseastham. 
+
+---
 
 This repository contains the documentation, code examples and solutions for the Rust for .NET developers workshop. You can find the full, live workshop at [https://rustfor.net](https://rustfor.net).
 
