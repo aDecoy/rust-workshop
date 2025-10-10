@@ -21,3 +21,4 @@ Good luck, and remember that working with JSON in Rust gives you the benefits of
 # Hint og teori
 * Se på module4 teori https://rustfor.net/docs/category/working-with-json
 * Serde doc https://serde.rs
+* Se over [linkene fra modul3](https://github.com/aDecoy/rust-workshop/blob/main/src/examples/module3/rust_app/README.md)
