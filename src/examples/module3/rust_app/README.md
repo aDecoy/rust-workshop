@@ -17,4 +17,4 @@ If you're struggling, you can find a solution on GitHub. Try it on your own firs
 * Se på "the book" https://doc.rust-lang.org/stable/book/ch03-02-data-types.html
 
 * Nye typer ser rare ut? Se hvordan de er i forhold til Java klasser her : https://chrischiedo.github.io/rust-for-java-devs/language/data-types.html
-* 
+* Hvorfor er det ingen "return" i User::new funksjonen? Se svar i [https://chrischiedo.github.io/rust-for-java-devs/language/data-types.html ](https://chrischiedo.github.io/rust-for-java-devs/language/functions.html)
