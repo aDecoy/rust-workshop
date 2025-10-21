@@ -3,7 +3,7 @@
 
 
 # Challenge
-Expand the functionality of the UserDetails struct a little bit:
+Expand the functionality of the User struct a little bit:
 
 1. Add an optional age property
 2. Add a new update_age function to update a users age with a new value
