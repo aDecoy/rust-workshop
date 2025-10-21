@@ -11,6 +11,9 @@ Expand the functionality of the User struct a little bit:
 
 If you're struggling, you can find a solution on GitHub. Try it on your own first, if you're finding it difficult that's good. It means you're learning.
 
+Working with enums: 
+
+4. Change User to be an enum, that is either a "Standard" user or a "Premium" user. (place all user data that used to be inside "User" into a struct called UserDetails)
 
 # Hint og teori
 * Se på module3 teori https://rustfor.net/docs/category/data-types
