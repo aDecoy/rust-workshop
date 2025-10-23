@@ -13,7 +13,7 @@ sudo snap install rustrover --classic
 ### Mac
 https://www.petergirnus.com/blog/rust-macos-how-to-install#:~:text=In%20this%20tutorial%2C%20I%20will%20show%20you%20how,configure%20the%20entire%20Rust%20toolchain%20and%20its%20dependencies. 
 
-# Rustc
+# Nedlastning av av Cargo og Rustc
 
 ## Alternativ 1: via IDE
 
