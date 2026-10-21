@@ -15,14 +15,16 @@ https://www.petergirnus.com/blog/rust-macos-how-to-install#:~:text=In%20this%20t
 
 # Nedlastning av av Cargo og Rustc
 
-## Alternativ 1: via IDE
+## Alternativ 1: Følg guide
+
+https://doc.rust-lang.org/cargo/getting-started/installation.html
+
+
+## Alternativ 2: via IDE
 
 Kan lastes inn via rustrover. (Kommer pop-up om "toolchain" når går til en rust main.rs fil. Trykk på den og på download rustc)
 Du burde nå kunne høyreklikke og trykke kjør.
 
-## Alternativ 2: Følg guide
-
-https://doc.rust-lang.org/cargo/getting-started/installation.html
 
 # Kjøre main.rs
 
