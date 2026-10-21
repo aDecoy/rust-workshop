@@ -11,9 +11,14 @@ Expand the functionality of the User struct a little bit:
 
 If you're struggling, you can find a solution on GitHub. Try it on your own first, if you're finding it difficult that's good. It means you're learning.
 
-Working with enums: 
+Extra task: Working with enums: 
 
-4. Change User to be an enum, that is either a "Standard" user or a "Premium" user. (place all user data that used to be inside "User" into a struct called UserDetails)
+"Standard" user or a "Premium" user are pretty similar. Some languages might use inheritance here. In rust it would be normal to represent it as an enum.
+Enums are super ergonomics and used instead of inheritance and even for error handling. It is thus good to test it out!
+
+4. Change User to be an enum, that is either a "Standard" user or a "Premium" user.
+
+5. This is as far as people got last time, so give yourself a pad on the back ;)
 
 # Hint og teori
 * Se på module3 teori https://rustfor.net/docs/category/data-types
